@@ -1,12 +1,21 @@
 import React, { Component } from "react";
-import { View, Text, StyleSheet } from "react-native";
-import { RkCard, RkButton } from "react-native-ui-kitten";
-import Input from "../components/common/Input";
+import {
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  ImageBackground,
+  StatusBar
+} from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import Input from "../components/Input";
+import CustomText from "../components/common/CustomText";
+import Button from "../components/common/Button";
 
 export default class RegisterForm extends Component {
   static navigationOptions = {
-    title: "Register page"
+    headerTitle: "Registration"
   };
+
   constructor() {
     super();
     this.state = {
@@ -39,7 +48,6 @@ export default class RegisterForm extends Component {
             email: "Not a valid email"
           }
         }));
-        console.log(this.state);
       } else {
         this.setState(previousState => ({
           error: {
@@ -82,11 +90,30 @@ export default class RegisterForm extends Component {
   }
 
   render() {
+    const {
+      container,
+      cardContainer,
+      errorStyle,
+      footerStyle,
+      buttonTextStyle,
+      buttonStyle,
+      signInTextStyle
+    } = styles;
     return (
-      <View style={styles.container}>
-        <Text> Registration </Text>
-        <RkCard style={styles.cardContainer}>
-          <View rkContent>
+      <ImageBackground
+        source={require("../../assets/Twitch.jpg")} //eslint-disable-line global-require
+        imageStyle={{
+          resizeMode: "strech" // works only here!
+        }}
+        style={styles.bgImage}
+      >
+        <StatusBar
+          barStyle="light-content"
+          backgroundColor="transparent"
+          translucent
+        />
+        <KeyboardAwareScrollView style={container}>
+          <View style={cardContainer}>
             <Input
               labelText="Email"
               inputType="email"
@@ -94,9 +121,11 @@ export default class RegisterForm extends Component {
               onFocus={this.onFocus.bind(this)}
             />
             {this.state.touched ? (
-              <Text style={styles.errorStyle}>{this.state.error.email}</Text>
+              <CustomText style={errorStyle}>
+                {this.state.error.email}
+              </CustomText>
             ) : (
-              <Text />
+              <CustomText />
             )}
             <Input
               labelText="Username"
@@ -105,9 +134,11 @@ export default class RegisterForm extends Component {
               onFocus={this.onFocus.bind(this)}
             />
             {this.state.touched ? (
-              <Text style={styles.errorStyle}>{this.state.error.username}</Text>
+              <CustomText style={errorStyle}>
+                {this.state.error.username}
+              </CustomText>
             ) : (
-              <Text />
+              <CustomText />
             )}
             <Input
               labelText="Password"
@@ -116,29 +147,66 @@ export default class RegisterForm extends Component {
               onFocus={this.onFocus.bind(this)}
             />
             {this.state.touched ? (
-              <Text style={styles.errorStyle}>{this.state.error.password}</Text>
+              <CustomText style={errorStyle}>
+                {this.state.error.password}
+              </CustomText>
             ) : (
-              <Text />
+              <CustomText />
             )}
+
+            <View style={footerStyle}>
+              <Button buttonStyle={buttonStyle} textStyle={buttonTextStyle}>
+                REGISTER
+              </Button>
+              <TouchableOpacity
+                style={{ marginTop: 15 }}
+                onPress={() => this.props.navigation.navigate("Login")}
+              >
+                <CustomText style={signInTextStyle}>
+                  Already have an account? Sign In
+                </CustomText>
+              </TouchableOpacity>
+            </View>
           </View>
-          <View rkFooter style={styles.footerStyle}>
-            <RkButton>Register</RkButton>
-          </View>
-        </RkCard>
-      </View>
+        </KeyboardAwareScrollView>
+      </ImageBackground>
     );
   }
 }
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 25
+    flex: 1,
+    paddingHorizontal: 25,
+    paddingTop: 20,
+    marginTop: 50
+  },
+  bgImage: {
+    flex: 1,
+    width: "100%", // applied to Image
+    height: "100%",
+    backgroundColor: "#fc0"
   },
   cardContainer: {
-    paddingHorizontal: 10
+    //backgroundColor: "#FDD835",
+    shadowOpacity: 0.5,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 0 },
+    padding: 15
   },
   errorStyle: {
-    color: "red"
+    color: "#f44336"
+  },
+  buttonStyle: {
+    margonTop: 10,
+    backgroundColor: "#1de9b6"
+  },
+  buttonTextStyle: {
+    color: "#ffff"
+  },
+  signInTextStyle: {
+    textDecorationLine: "underline",
+    color: "#5263dd"
   },
   footerStyle: {
     alignItems: "center",

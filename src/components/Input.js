@@ -1,12 +1,7 @@
 import React, { Component } from "react";
-import {
-  View,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity
-} from "react-native";
+import { View, StyleSheet, TextInput, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
+import CustomText from "./common/CustomText";
 
 export default class Input extends Component {
   constructor(props) {
@@ -32,7 +27,8 @@ export default class Input extends Component {
       placeholder,
       defaultValue,
       inputStyle,
-      onFocus
+      onFocus,
+      customLabelStyle
     } = this.props;
     const { secureField, inputValue } = this.state;
     const {
@@ -45,13 +41,14 @@ export default class Input extends Component {
 
     return (
       <View style={container}>
-        <Text style={[{ fontWeight: "700", fontSize: 14 }, labelStyle]}>
+        <CustomText style={[labelStyle, customLabelStyle]}>
           {labelText}
-        </Text>
+        </CustomText>
         <TextInput
           style={[inputField, inputStyle]}
           secureTextEntry={secureField}
           autoCorrect={false}
+          autoCapitalize={false}
           onChangeText={this.onChangeText.bind(this)}
           onFocus={onFocus}
           placeholder={placeholder}
@@ -77,17 +74,26 @@ const styles = StyleSheet.create({
   },
   labelStyle: {
     fontSize: 20,
-    paddingVertical: 10
+    paddingVertical: 10,
+    color: "#FDD835"
   },
   inputField: {
-    fontSize: 15,
+    fontSize: 20,
+    height: 40,
+    paddingHorizontal: 5,
     marginBottom: 5,
-    borderBottomWidth: 1,
-    borderBottomColor: "rgba(218,218,218,1)"
+    backgroundColor: "transparent",
+    borderBottomWidth: 0.5,
+    borderBottomColor: "#FDD835",
+    fontFamily: "Product-Sans",
+    color: "#ffff"
   },
   secureIconStyle: {
     position: "absolute",
-    right: 0,
+    right: 15,
     bottom: 15
+  },
+  iconStyle: {
+    color: "#ffff"
   }
 });
