@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Image, StyleSheet } from "react-native";
-import CustomText from "../common/CustomText";
+import { CustomText } from "./CustomText";
 
 const Logo = props => (
   <View>
@@ -13,7 +13,7 @@ const Logo = props => (
     </CustomText>
   </View>
 );
-export default Logo;
+export { Logo };
 
 const styles = StyleSheet.create({
   image: {

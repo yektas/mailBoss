@@ -7,7 +7,7 @@ const BackButton = props => (
     <Icon name="ios-arrow-back" size={30} style={styles.iconStyle} />
   </TouchableOpacity>
 );
-export default BackButton;
+export { BackButton };
 
 const styles = StyleSheet.create({
   iconStyle: {

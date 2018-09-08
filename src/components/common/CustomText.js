@@ -4,13 +4,16 @@ import { StyleSheet, Text } from "react-native";
 class CustomText extends Component {
   render() {
     return (
-      <Text style={[styles.textStyle, this.props.style]}>
+      <Text
+        style={[styles.textStyle, this.props.style]}
+        numberOfLines={this.props.numberOfLines}
+      >
         {this.props.children}
       </Text>
     );
   }
 }
-export default CustomText;
+export { CustomText };
 
 const styles = StyleSheet.create({
   textStyle: {

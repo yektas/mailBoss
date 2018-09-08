@@ -11,7 +11,7 @@ class Button extends Component {
     );
   }
 }
-export default Button;
+export { Button };
 
 const styles = StyleSheet.create({
   button: {

@@ -1,22 +1,22 @@
 import React, { Component } from "react";
-import {
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  ImageBackground,
-  StatusBar
-} from "react-native";
+import { View, StyleSheet, TouchableOpacity, StatusBar } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { LinearGradient } from "expo";
 import Images from "../config/images";
-import Input from "../components/Input";
-import CustomText from "../components/common/CustomText";
-import Button from "../components/common/Button";
-import Logo from "../components/common/Logo";
+import {
+  BackButton,
+  Button,
+  CustomText,
+  Logo,
+  Input
+} from "../components/common";
 
 export default class LoginForm extends Component {
-  static navigationOptions = {
-    headerMode: "none"
-  };
+  static navigationOptions = ({ navigation }) => ({
+    headerLeft: <BackButton onPress={() => navigation.goBack()} />,
+    headerTransparent: true,
+    headerTintColor: "#FDD835"
+  });
 
   state = {
     username: "",
@@ -38,13 +38,7 @@ export default class LoginForm extends Component {
       signUpTextStyle
     } = styles;
     return (
-      <ImageBackground
-        source={Images.background}
-        imageStyle={{
-          resizeMode: "stretch"
-        }}
-        style={styles.bgImage}
-      >
+      <LinearGradient colors={["#2A0845", "#6441A5"]} style={{ flex: 1 }}>
         <StatusBar
           barStyle="light-content"
           backgroundColor="transparent"
@@ -92,7 +86,7 @@ export default class LoginForm extends Component {
             </View>
           </View>
         </KeyboardAwareScrollView>
-      </ImageBackground>
+      </LinearGradient>
     );
   }
 }
