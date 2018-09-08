@@ -48,8 +48,9 @@ export default class Input extends Component {
           style={[inputField, inputStyle]}
           secureTextEntry={secureField}
           autoCorrect={false}
-          autoCapitalize={false}
+          autoCapitalize={"none"}
           onChangeText={this.onChangeText.bind(this)}
+          underlineColorAndroid={"transparent"}
           onFocus={onFocus}
           placeholder={placeholder}
           defaultValue={defaultValue}
@@ -70,11 +71,11 @@ export default class Input extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 5
+    padding: 2
   },
   labelStyle: {
     fontSize: 20,
-    paddingVertical: 10,
+    paddingVertical: 5,
     color: "#FDD835"
   },
   inputField: {

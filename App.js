@@ -10,7 +10,7 @@ export default class App extends React.Component {
 
   async componentDidMount() {
     await Font.loadAsync({
-      "Product-Sans": require("./assets/fonts/Product-Sans-Regular.ttf")
+      "Product-Sans": require("./src/assets/fonts/Product-Sans-Regular.ttf")
     });
 
     this.setState({ fontLoaded: true });

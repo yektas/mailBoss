@@ -12,6 +12,7 @@ export default BackButton;
 const styles = StyleSheet.create({
   iconStyle: {
     color: "#FDD835",
-    paddingLeft: 15
+    paddingLeft: 15,
+    fontSize: 40
   }
 });

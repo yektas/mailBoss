@@ -3,14 +3,16 @@ import { createStackNavigator } from "react-navigation";
 import BackButton from "./components/common/BackButton";
 import Register from "./screens/RegisterForm";
 import Login from "./screens/LoginForm";
+import Users from "./screens/Users";
 
 const MainStack = createStackNavigator(
   {
     Register,
-    Login
+    Login,
+    Users
   },
   {
-    initialRouteName: "Register",
+    initialRouteName: "Login",
     navigationOptions: ({ navigation }) => ({
       headerLeft: <BackButton onPress={() => navigation.goBack()} />,
       headerTransparent: true,

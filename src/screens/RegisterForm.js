@@ -4,16 +4,19 @@ import {
   StyleSheet,
   TouchableOpacity,
   ImageBackground,
+  Image,
   StatusBar
 } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import Images from "../config/images";
 import Input from "../components/Input";
 import CustomText from "../components/common/CustomText";
 import Button from "../components/common/Button";
+import Logo from "../components/common/Logo";
 
 export default class RegisterForm extends Component {
   static navigationOptions = {
-    headerTitle: "Registration"
+    headerMode: "none"
   };
 
   constructor() {
@@ -101,9 +104,9 @@ export default class RegisterForm extends Component {
     } = styles;
     return (
       <ImageBackground
-        source={require("../../assets/Twitch.jpg")} //eslint-disable-line global-require
+        source={Images.background}
         imageStyle={{
-          resizeMode: "strech" // works only here!
+          resizeMode: "stretch"
         }}
         style={styles.bgImage}
       >
@@ -112,7 +115,18 @@ export default class RegisterForm extends Component {
           backgroundColor="transparent"
           translucent
         />
-        <KeyboardAwareScrollView style={container}>
+        <KeyboardAwareScrollView
+          style={container}
+          contentContainerStyle={{
+            flex: 1,
+            justifyContent: "center"
+          }}
+        >
+          <Logo
+            imageSource={Images.newAccount}
+            imageStyle={{ marginBottom: 10, width: 70, height: 70 }}
+            label="Create new account"
+          />
           <View style={cardContainer}>
             <Input
               labelText="Email"
@@ -163,7 +177,8 @@ export default class RegisterForm extends Component {
                 onPress={() => this.props.navigation.navigate("Login")}
               >
                 <CustomText style={signInTextStyle}>
-                  Already have an account? Sign In
+                  <CustomText>Already have an account? </CustomText>
+                  <CustomText style={{ color: "#27AAE0" }}>Sign In</CustomText>
                 </CustomText>
               </TouchableOpacity>
             </View>
@@ -183,12 +198,10 @@ const styles = StyleSheet.create({
   },
   bgImage: {
     flex: 1,
-    width: "100%", // applied to Image
-    height: "100%",
-    backgroundColor: "#fc0"
+    width: "100%",
+    height: "100%"
   },
   cardContainer: {
-    //backgroundColor: "#FDD835",
     shadowOpacity: 0.5,
     shadowRadius: 10,
     shadowOffset: { width: 0, height: 0 },
@@ -198,18 +211,24 @@ const styles = StyleSheet.create({
     color: "#f44336"
   },
   buttonStyle: {
-    margonTop: 10,
-    backgroundColor: "#1de9b6"
+    marginTop: 20,
+    backgroundColor: "#FF3D00"
   },
   buttonTextStyle: {
     color: "#ffff"
   },
   signInTextStyle: {
-    textDecorationLine: "underline",
-    color: "#5263dd"
+    color: "#ffff",
+    marginTop: 10,
+    fontSize: 18
   },
   footerStyle: {
     alignItems: "center",
     marginBottom: 10
+  },
+  accountIconStyle: {
+    alignSelf: "center",
+    width: 100,
+    height: 100
   }
 });

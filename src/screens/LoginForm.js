@@ -1,31 +1,98 @@
 import React, { Component } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import {
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  ImageBackground,
+  StatusBar
+} from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { RkButton } from "react-native-ui-kitten";
+import Images from "../config/images";
 import Input from "../components/Input";
+import CustomText from "../components/common/CustomText";
+import Button from "../components/common/Button";
+import Logo from "../components/common/Logo";
 
 export default class LoginForm extends Component {
+  static navigationOptions = {
+    headerMode: "none"
+  };
+
+  state = {
+    username: "",
+    password: "",
+    touched: false
+  };
+
+  onFocus() {
+    this.setState({ touched: true });
+  }
+
   render() {
-    const { container, headerStyle, cardContainer, footerStyle } = styles;
+    const {
+      container,
+      cardContainer,
+      footerStyle,
+      buttonTextStyle,
+      buttonStyle,
+      signUpTextStyle
+    } = styles;
     return (
-      <KeyboardAwareScrollView style={container}>
-        <Text style={headerStyle}> Login </Text>
-        <View style={cardContainer}>
-          <Input
-            labelText="Username"
-            inputType="text"
-            onChangeText={text => this.validate("text", text)}
-          />
-          <Input
-            labelText="Password"
-            inputType="password"
-            onChangeText={text => this.validate("password", text)}
-          />
-        </View>
-        <View style={footerStyle}>
-          <RkButton>Login</RkButton>
-        </View>
-      </KeyboardAwareScrollView>
+      <ImageBackground
+        source={Images.background}
+        imageStyle={{
+          resizeMode: "stretch"
+        }}
+        style={styles.bgImage}
+      >
+        <StatusBar
+          barStyle="light-content"
+          backgroundColor="transparent"
+          translucent
+        />
+        <KeyboardAwareScrollView
+          style={container}
+          contentContainerStyle={{
+            flex: 1,
+            justifyContent: "center"
+          }}
+        >
+          <Logo imageSource={Images.mailBox} label="MailBoss" />
+          <View style={cardContainer}>
+            <Input
+              labelText="Username"
+              inputType="text"
+              onChangeText={text => this.setState({ username: text })}
+              onFocus={this.onFocus.bind(this)}
+            />
+            <Input
+              labelText="Password"
+              inputType="password"
+              onChangeText={text => this.setState({ password: text })}
+              onFocus={this.onFocus.bind(this)}
+            />
+
+            <View style={footerStyle}>
+              <Button
+                onPress={() => this.props.navigation.navigate("Users")}
+                buttonStyle={buttonStyle}
+                textStyle={buttonTextStyle}
+              >
+                LOGIN
+              </Button>
+              <TouchableOpacity
+                style={{ marginTop: 15 }}
+                onPress={() => this.props.navigation.navigate("Register")}
+              >
+                <CustomText style={signUpTextStyle}>
+                  <CustomText>Don't have an account? </CustomText>
+                  <CustomText style={{ color: "#27AAE0" }}>Sign Up</CustomText>
+                </CustomText>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </KeyboardAwareScrollView>
+      </ImageBackground>
     );
   }
 }
@@ -34,32 +101,32 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 25,
-    backgroundColor: "#5263dd",
-    paddingTop: 30
+    paddingTop: 20,
+    marginTop: 25
   },
-  headerStyle: {
-    fontSize: 30,
-    marginBottom: 20,
-    alignSelf: "center",
-    color: "#f5d856",
-    fontFamily: "Product-Sans"
+  bgImage: {
+    flex: 1,
+    width: "100%",
+    height: "100%"
   },
   cardContainer: {
-    backgroundColor: "#f5d856",
-    elevation: 5,
-    padding: 15
+    shadowOpacity: 0.5,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 0 },
+    padding: 15,
+    justifyContent: "center"
   },
-  inputErrorStyle: {
-    borderWidth: 2,
-    borderColor: "#f44336"
+  buttonStyle: {
+    marginTop: 20,
+    backgroundColor: "#ff3d00"
   },
-  labelErrorStyle: {
-    color: "#f44336",
-    borderColor: "#f44336"
+  buttonTextStyle: {
+    color: "#ffff"
   },
-  errorStyle: {
-    color: "#f44336",
-    fontFamily: "Product-Sans"
+  signUpTextStyle: {
+    color: "#ffff",
+    marginTop: 10,
+    fontSize: 18
   },
   footerStyle: {
     alignItems: "center",

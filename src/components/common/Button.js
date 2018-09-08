@@ -6,7 +6,7 @@ class Button extends Component {
     const { onPress, buttonStyle, textStyle } = this.props;
     return (
       <TouchableOpacity style={[styles.button, buttonStyle]} onPress={onPress}>
-        <Text style={[textStyle]}>{this.props.children}</Text>
+        <Text style={[styles.text, textStyle]}>{this.props.children}</Text>
       </TouchableOpacity>
     );
   }
@@ -17,13 +17,11 @@ const styles = StyleSheet.create({
   button: {
     alignItems: "center",
     justifyContent: "center",
-    width: 170,
-    height: 50,
-    borderWidth: 0.5,
-    borderRadius: 6
+    width: 280,
+    height: 45,
+    borderWidth: 0
   },
-  textStyle: {
-    color: "#FDD835",
+  text: {
     fontSize: 18
   }
 });
