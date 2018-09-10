@@ -7,6 +7,11 @@ const Header = props => {
 
   return (
     <View style={viewStyle}>
+      <StatusBar
+        barStyle="light-content"
+        backgroundColor="transparent"
+        translucent
+      />
       <CustomText style={textStyle}>{props.headerText}</CustomText>
     </View>
   );

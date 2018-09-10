@@ -38,7 +38,7 @@ class Input extends Component {
       secureIconStyle,
       labelStyle
     } = styles;
-
+    const keyboardType = inputType === "email" ? "email-address" : "default";
     return (
       <View style={container}>
         <CustomText style={[labelStyle, customLabelStyle]}>
@@ -51,6 +51,7 @@ class Input extends Component {
           autoCapitalize={"none"}
           onChangeText={this.onChangeText.bind(this)}
           underlineColorAndroid={"transparent"}
+          keyboardType={keyboardType}
           onFocus={onFocus}
           placeholder={placeholder}
           defaultValue={defaultValue}

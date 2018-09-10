@@ -17,6 +17,7 @@ export { CustomText };
 
 const styles = StyleSheet.create({
   textStyle: {
-    fontFamily: "Product-Sans"
+    fontFamily: "Product-Sans",
+    color: "#3A373E"
   }
 });

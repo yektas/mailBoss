@@ -2,9 +2,9 @@ import React, { Component } from "react";
 import {
   ScrollView,
   View,
-  StatusBar,
   FlatList,
-  StyleSheet
+  StyleSheet,
+  AsyncStorage
 } from "react-native";
 import axios from "axios";
 import ListItem from "../components/ListItem";
@@ -14,19 +14,34 @@ class Users extends Component {
   constructor() {
     super();
     this.state = {
-      users: []
+      users: [],
+      auth_token: ""
     };
   }
 
-  componentWillMount() {
+  async componentWillMount() {
+    const header = {};
+    try {
+      const value = await AsyncStorage.getItem("auth_token");
+      if (value !== null) {
+        header.Authorization = `Token ${value}`;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
     axios
-      .get("http://192.168.1.2:8000/api/v1/users")
+      .get("http://192.168.1.2:8000/api/users", {
+        headers: header
+      })
       .then(response => {
         this.setState({
           users: response.data
         });
       })
-      .catch(error => console.log(error));
+      .catch(error => {
+        console.log(error);
+      });
   }
 
   renderSeparator = () => {
@@ -47,11 +62,6 @@ class Users extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <StatusBar
-          barStyle="light-content"
-          backgroundColor="transparent"
-          translucent
-        />
         <Header headerText="Users" />
         <ScrollView styles={{ flex: 1 }}>
           <FlatList
@@ -70,7 +80,6 @@ export default Users;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: "#ffff"
+    flex: 1
   }
 });

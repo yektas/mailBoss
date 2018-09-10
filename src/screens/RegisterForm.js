@@ -2,13 +2,15 @@ import React, { Component } from "react";
 import { View, StyleSheet, TouchableOpacity, StatusBar } from "react-native";
 import { LinearGradient } from "expo";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import axios from "axios";
 import Images from "../config/images";
 import {
   BackButton,
   Button,
   CustomText,
   Logo,
-  Input
+  Input,
+  Spinner
 } from "../components/common";
 
 export default class RegisterForm extends Component {
@@ -22,9 +24,13 @@ export default class RegisterForm extends Component {
     super();
     this.state = {
       touched: false,
-      emailValidated: true,
-      usernameValidated: true,
-      passwordValidated: true,
+      loading: false,
+      validEmail: true,
+      validUsername: true,
+      validPassword: true,
+      email: "",
+      username: "",
+      password: "",
       error: {
         email: "",
         username: "",
@@ -37,6 +43,41 @@ export default class RegisterForm extends Component {
     this.setState({ touched: true });
   }
 
+  onSubmit() {
+    const { validEmail, validUsername, validPassword } = this.state;
+    if (validEmail && validUsername && validPassword) {
+      axios
+        .post("http://192.168.1.2:8000/api/users/", {
+          username: this.state.username,
+          email: this.state.email,
+          password: this.state.password
+        })
+        .then(response => {
+          this.setState({
+            loading: true
+          });
+        })
+        .catch(error => {
+          this.setState({
+            loading: true
+          });
+        });
+    }
+  }
+
+  showctivityIndicator() {
+    this.setState({
+      loading: true
+    });
+    setTimeout(
+      () =>
+        this.setState({
+          loading: false
+        }),
+      2500
+    );
+  }
+
   validate(type, text) {
     const usernameRegex = /^([a-zA-Z0-9_-]){3,15}$/; // Alphanumeric between 3 to 15 characters
     const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/; //eslint-disable-line no-useless-escape
@@ -44,7 +85,7 @@ export default class RegisterForm extends Component {
     if (type === "email") {
       if (emailRegex.test(text) === false && text.trim() !== "") {
         this.setState(previousState => ({
-          emailValidated: false,
+          validEmail: false,
           error: {
             ...previousState.error,
             email: "Not a valid email"
@@ -52,15 +93,18 @@ export default class RegisterForm extends Component {
         }));
       } else {
         this.setState(previousState => ({
+          validEmail: true,
           error: {
             ...previousState.error,
             email: ""
-          }
+          },
+          email: text
         }));
       }
     } else if (type === "text") {
       if (usernameRegex.test(text) === false && text.trim() !== "") {
         this.setState(previousState => ({
+          validUsername: false,
           error: {
             ...previousState.error,
             username: "At least 3 characters and maximum 15"
@@ -68,14 +112,17 @@ export default class RegisterForm extends Component {
         }));
       } else {
         this.setState(previousState => ({
+          validUsername: true,
           error: {
             ...previousState.error,
             username: ""
-          }
+          },
+          username: text
         }));
       }
     } else if (text.trim() === "") {
       this.setState(previousState => ({
+        validPassword: false,
         error: {
           ...previousState.error,
           password: "Password is empty"
@@ -83,10 +130,12 @@ export default class RegisterForm extends Component {
       }));
     } else {
       this.setState(previousState => ({
+        validPassword: true,
         error: {
           ...previousState.error,
           password: ""
-        }
+        },
+        password: text
       }));
     }
   }
@@ -108,6 +157,7 @@ export default class RegisterForm extends Component {
           backgroundColor="transparent"
           translucent
         />
+
         <KeyboardAwareScrollView
           style={container}
           contentContainerStyle={{
@@ -162,7 +212,11 @@ export default class RegisterForm extends Component {
             )}
 
             <View style={footerStyle}>
-              <Button buttonStyle={buttonStyle} textStyle={buttonTextStyle}>
+              <Button
+                buttonStyle={buttonStyle}
+                textStyle={buttonTextStyle}
+                onPress={this.onSubmit.bind(this)}
+              >
                 REGISTER
               </Button>
               <TouchableOpacity
@@ -170,7 +224,9 @@ export default class RegisterForm extends Component {
                 onPress={() => this.props.navigation.navigate("Login")}
               >
                 <CustomText style={signInTextStyle}>
-                  <CustomText>Already have an account? </CustomText>
+                  <CustomText style={{ color: "#ffff" }}>
+                    Already have an account?{" "}
+                  </CustomText>
                   <CustomText style={{ color: "#27AAE0" }}>Sign In</CustomText>
                 </CustomText>
               </TouchableOpacity>
@@ -195,7 +251,7 @@ const styles = StyleSheet.create({
     height: "100%"
   },
   cardContainer: {
-    shadowOpacity: 0.5,
+    shadowOpacity: 0.3,
     shadowRadius: 10,
     shadowOffset: { width: 0, height: 0 },
     padding: 15

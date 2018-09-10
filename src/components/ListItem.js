@@ -13,17 +13,21 @@ class ListItem extends Component {
       container,
       peakText,
       headerText,
+      subText,
       dateText
     } = styles;
     return (
       <TouchableOpacity onPress={onPress}>
         <View style={container}>
           <View style={avatarContainer}>
-            <Icon name="ios-contact" size={80} />
+            <Icon name="ios-contact" color={"#3A373E"} size={80} />
           </View>
           <View style={contentContainer}>
             <CustomText style={headerText} numberOfLines={1}>
-              {data.username} - {data.email}
+              {data.username}
+            </CustomText>
+            <CustomText style={subText} numberOfLines={1}>
+              {data.email}
             </CustomText>
             <CustomText style={peakText} numberOfLines={1}>
               {data.last_email.content}
@@ -44,7 +48,9 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     height: 90,
-    width: "100%"
+    width: "100%",
+    borderBottomWidth: 0.5,
+    borderBottomColor: "#999798"
   },
   avatarContainer: {
     flex: 1.5,
@@ -67,7 +73,12 @@ const styles = StyleSheet.create({
     fontSize: 16
   },
   headerText: {
-    fontSize: 20
+    fontSize: 20,
+    color: "#3A373E"
+  },
+  subText: {
+    fontSize: 18,
+    color: "#3A373E"
   },
   peakText: {
     fontSize: 18,

@@ -1,34 +1,84 @@
 import React, { Component } from "react";
-import { View, StyleSheet, TouchableOpacity, StatusBar } from "react-native";
+import {
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Alert,
+  AsyncStorage,
+  StatusBar
+} from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { LinearGradient } from "expo";
+import axios from "axios";
 import Images from "../config/images";
 import {
-  BackButton,
   Button,
   CustomText,
   Logo,
-  Input
+  Input,
+  Spinner,
+  Notification
 } from "../components/common";
 
 export default class LoginForm extends Component {
-  static navigationOptions = ({ navigation }) => ({
-    headerLeft: <BackButton onPress={() => navigation.goBack()} />,
-    headerTransparent: true,
-    headerTintColor: "#FDD835"
-  });
-
-  state = {
-    username: "",
-    password: "",
-    touched: false
+  static navigationOptions = {
+    headerTransparent: true
   };
+
+  constructor() {
+    super();
+    this.state = {
+      username: "",
+      password: "",
+      touched: false,
+      loading: false,
+      formValid: true
+    };
+  }
 
   onFocus() {
     this.setState({ touched: true });
   }
+  handleCloseNotification() {
+    this.setState({ formValid: true });
+  }
+
+  async handleLogin() {
+    /*this.setState({
+      loading: true
+    });*/
+    axios
+      .post("http://192.168.1.2:8000/api/auth/login/", {
+        username: this.state.username,
+        password: this.state.password
+      })
+      .then(async response => {
+        try {
+          await AsyncStorage.setItem("auth_token", response.data.token);
+          this.props.navigation.navigate("Users");
+        } catch (error) {
+          console.log(error);
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }
+  showactivityIndicator() {
+    this.setState({
+      loading: true
+    });
+    setTimeout(
+      () =>
+        this.setState({
+          loading: false
+        }),
+      2500
+    );
+  }
 
   render() {
+    const showNotification = !this.state.formValid;
     const {
       container,
       cardContainer,
@@ -68,7 +118,7 @@ export default class LoginForm extends Component {
 
             <View style={footerStyle}>
               <Button
-                onPress={() => this.props.navigation.navigate("Users")}
+                onPress={this.handleLogin.bind(this)}
                 buttonStyle={buttonStyle}
                 textStyle={buttonTextStyle}
               >
@@ -79,13 +129,26 @@ export default class LoginForm extends Component {
                 onPress={() => this.props.navigation.navigate("Register")}
               >
                 <CustomText style={signUpTextStyle}>
-                  <CustomText>Don't have an account? </CustomText>
+                  <CustomText style={{ color: "#ffff" }}>
+                    Don't have an account?{" "}
+                  </CustomText>
                   <CustomText style={{ color: "#27AAE0" }}>Sign Up</CustomText>
                 </CustomText>
               </TouchableOpacity>
             </View>
           </View>
         </KeyboardAwareScrollView>
+        <Spinner animationType="fade" visible={this.state.loading} />
+        <Button onPress={this.showactivityIndicator.bind(this)}>
+          Open spinner
+        </Button>
+        <Notification
+          showNotification={showNotification}
+          handleCloseNotification={this.handleCloseNotification.bind(this)}
+          type="Error"
+          firstLine="Your credentials are wrong."
+          secondLine="Please try again"
+        />
       </LinearGradient>
     );
   }
@@ -104,7 +167,7 @@ const styles = StyleSheet.create({
     height: "100%"
   },
   cardContainer: {
-    shadowOpacity: 0.5,
+    shadowOpacity: 0.3,
     shadowRadius: 10,
     shadowOffset: { width: 0, height: 0 },
     padding: 15,

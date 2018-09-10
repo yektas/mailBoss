@@ -1,26 +1,21 @@
 import React, { Component } from "react";
-import { View, Text, StyleSheet, StatusBar, ScrollView } from "react-native";
+import { View, Text, StyleSheet, ScrollView } from "react-native";
 import { Header, PlusButton } from "../components/common";
 
-class MailBox extends Component {
+class Inbox extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <StatusBar
-          barStyle="light-content"
-          backgroundColor="transparent"
-          translucent
-        />
         <Header headerText="Mailbox" />
         <ScrollView>
-          <Text> My MailBox </Text>
+          <Text> Inbox </Text>
         </ScrollView>
         <PlusButton />
       </View>
     );
   }
 }
-export default MailBox;
+export default Inbox;
 
 const styles = StyleSheet.create({
   container: {

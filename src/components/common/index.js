@@ -5,3 +5,5 @@ export * from "./Logo";
 export * from "./Input";
 export * from "./Header";
 export * from "./PlusButton";
+export * from "./Spinner";
+export * from "./Notification";
