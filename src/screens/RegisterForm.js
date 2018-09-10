@@ -4,13 +4,14 @@ import { LinearGradient } from "expo";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import axios from "axios";
 import Images from "../config/images";
+import urls from "../config/urls";
 import {
   BackButton,
   Button,
   CustomText,
   Logo,
   Input,
-  Spinner
+  Notification
 } from "../components/common";
 
 export default class RegisterForm extends Component {
@@ -28,6 +29,8 @@ export default class RegisterForm extends Component {
       validEmail: true,
       validUsername: true,
       validPassword: true,
+      formValid: true,
+      registerFailed: false,
       email: "",
       username: "",
       password: "",
@@ -46,26 +49,33 @@ export default class RegisterForm extends Component {
   onSubmit() {
     const { validEmail, validUsername, validPassword } = this.state;
     if (validEmail && validUsername && validPassword) {
+      this.setState({ formValid: true });
       axios
-        .post("http://192.168.1.2:8000/api/users/", {
+        .post(urls.CreateUser, {
           username: this.state.username,
           email: this.state.email,
           password: this.state.password
         })
-        .then(response => {
+        .then(() => {
           this.setState({
-            loading: true
+            loading: false
           });
+          this.props.navigation.navigate("");
         })
         .catch(error => {
+          console.log(error.response);
           this.setState({
-            loading: true
+            loading: false,
+            registerFailed: true
           });
         });
     }
   }
+  handleCloseNotification() {
+    this.setState({ formValid: true, registerFailed: false });
+  }
 
-  showctivityIndicator() {
+  showactivityIndicator() {
     this.setState({
       loading: true
     });
@@ -140,6 +150,18 @@ export default class RegisterForm extends Component {
     }
   }
 
+  renderNotification() {
+    const showNotification = !this.state.formValid || this.state.registerFailed;
+    return (
+      <Notification
+        showNotification={showNotification}
+        handleCloseNotification={this.handleCloseNotification.bind(this)}
+        type="Error"
+        firstLine="Something went wrong"
+        secondLine="Please check your information"
+      />
+    );
+  }
   render() {
     const {
       container,
@@ -233,6 +255,7 @@ export default class RegisterForm extends Component {
             </View>
           </View>
         </KeyboardAwareScrollView>
+        {this.renderNotification()}
       </LinearGradient>
     );
   }

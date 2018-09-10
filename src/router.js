@@ -21,10 +21,15 @@ const AuthStackNavigator = createStackNavigator(
     initialRouteName: "Login"
   }
 );
+
+const MainStack = createStackNavigator({
+  Users,
+  MailDetail
+});
 const TabNavigator = createBottomTabNavigator(
   {
     Inbox: {
-      screen: MailDetail,
+      screen: Inbox,
       navigationOptions: () => ({
         tabBarLabel: "INBOX",
         tabBarIcon: ({ tintColor }) => (
@@ -33,7 +38,7 @@ const TabNavigator = createBottomTabNavigator(
       })
     },
     Users: {
-      screen: Users,
+      screen: MainStack,
       navigationOptions: () => ({
         tabBarLabel: "USERS",
         tabBarIcon: ({ tintColor }) => (
@@ -70,10 +75,10 @@ export const createRootNavigator = (signedIn = false) => {
   return createSwitchNavigator(
     {
       Auth: AuthStackNavigator,
-      Main: TabNavigator
+      TabNavigator
     },
     {
-      initialRouteName: signedIn ? "Main" : "Auth"
+      initialRouteName: signedIn ? "TabNavigator" : "Auth"
     }
   );
 };

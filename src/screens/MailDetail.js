@@ -4,9 +4,9 @@ import Icon from "react-native-vector-icons/Ionicons";
 import { Header, CustomText } from "../components/common";
 
 class MailDetail extends Component {
-  onChangeText(text) {
-    console.log(text);
-  }
+  static navigationOptions = {
+    headerTransparent: true
+  };
   render() {
     const {
       container,
@@ -19,8 +19,10 @@ class MailDetail extends Component {
       regularText,
       labelStyle,
       mailText,
-      timestamp
+      timestampStyle
     } = styles;
+    const mail = this.props.navigation.getParam("mail");
+    console.log(mail);
     return (
       <View style={container}>
         <Header headerText="Mailbox" />
@@ -31,40 +33,30 @@ class MailDetail extends Component {
             </View>
             <View style={contentContainer}>
               <CustomText style={boldText} numberOfLines={1}>
-                Sercan Yektaş
+                {mail.username}
               </CustomText>
               <View style={{ flexDirection: "row" }}>
                 <CustomText style={labelStyle}>From: </CustomText>
                 <CustomText style={regularText} numberOfLines={1}>
-                  syektas@gmail.com
+                  {mail.last_email.from_user.email}
                 </CustomText>
               </View>
               <View style={{ flexDirection: "row" }}>
                 <CustomText style={labelStyle}>To: </CustomText>
                 <CustomText style={regularText} numberOfLines={1}>
-                  sercanyektas@icloud.com
+                  {mail.last_email.to_user.email}
                 </CustomText>
               </View>
             </View>
           </View>
           <View style={subjectContainer}>
-            <CustomText style={boldText}>About that task earlier</CustomText>
-            <CustomText style={timestamp}>
-              Date & Time: June 12th, 2018
+            <CustomText style={boldText}>{mail.last_email.subject}</CustomText>
+            <CustomText style={timestampStyle}>
+              {mail.last_email.timestamp}
             </CustomText>
           </View>
           <View style={mailContainer}>
-            <CustomText style={mailText}>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam
-              bibendum viverra congue. Fusce mauris ex, bibendum vel augue
-              vitae, vestibulum pellentesque risus. Nunc massa est, viverra sit
-              amet orci a, congue dapibus dui. Proin sed magna felis. Donec
-              consectetur urna pharetra sollicitudin venenatis. In nibh libero,
-              dictum id lobortis eu, porta eu lorem. Nullam gravida est
-              ultricies elit malesuada vehicula. Quisque malesuada venenatis
-              tortor, et fringilla mauris pulvinar sed. Praesent et interdum
-              risus. Vestibulum consectetur porta pellentes
-            </CustomText>
+            <CustomText style={mailText}>{mail.last_email.content}</CustomText>
           </View>
         </ScrollView>
       </View>
@@ -116,7 +108,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: "#999798"
   },
-  timestamp: {
+  timestampStyle: {
     fontSize: 18,
     color: "#999798",
     paddingLeft: 5

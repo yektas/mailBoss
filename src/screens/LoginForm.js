@@ -3,7 +3,6 @@ import {
   View,
   StyleSheet,
   TouchableOpacity,
-  Alert,
   AsyncStorage,
   StatusBar
 } from "react-native";
@@ -11,6 +10,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { LinearGradient } from "expo";
 import axios from "axios";
 import Images from "../config/images";
+import urls from "../config/urls";
 import {
   Button,
   CustomText,
@@ -32,7 +32,8 @@ export default class LoginForm extends Component {
       password: "",
       touched: false,
       loading: false,
-      formValid: true
+      formValid: true,
+      loginFailed: false
     };
   }
 
@@ -40,15 +41,15 @@ export default class LoginForm extends Component {
     this.setState({ touched: true });
   }
   handleCloseNotification() {
-    this.setState({ formValid: true });
+    this.setState({ formValid: true, loginFailed: false });
   }
 
   async handleLogin() {
-    /*this.setState({
+    this.setState({
       loading: true
-    });*/
+    });
     axios
-      .post("http://192.168.1.2:8000/api/auth/login/", {
+      .post(urls.Login, {
         username: this.state.username,
         password: this.state.password
       })
@@ -60,8 +61,12 @@ export default class LoginForm extends Component {
           console.log(error);
         }
       })
-      .catch(error => {
-        console.log(error);
+      .catch(() => {
+        this.setState({
+          loginFailed: true,
+          loading: false
+        });
+        this.renderNotification();
       });
   }
   showactivityIndicator() {
@@ -77,8 +82,20 @@ export default class LoginForm extends Component {
     );
   }
 
+  renderNotification() {
+    const showNotification = !this.state.formValid || this.state.loginFailed;
+    return (
+      <Notification
+        showNotification={showNotification}
+        handleCloseNotification={this.handleCloseNotification.bind(this)}
+        type="Error"
+        firstLine="Your credentials are wrong."
+        secondLine="Please try again"
+      />
+    );
+  }
+
   render() {
-    const showNotification = !this.state.formValid;
     const {
       container,
       cardContainer,
@@ -142,13 +159,7 @@ export default class LoginForm extends Component {
         <Button onPress={this.showactivityIndicator.bind(this)}>
           Open spinner
         </Button>
-        <Notification
-          showNotification={showNotification}
-          handleCloseNotification={this.handleCloseNotification.bind(this)}
-          type="Error"
-          firstLine="Your credentials are wrong."
-          secondLine="Please try again"
-        />
+        {this.renderNotification()}
       </LinearGradient>
     );
   }

@@ -23,6 +23,9 @@ const styles = StyleSheet.create({
     zIndex: 1,
     borderRadius: 28,
     backgroundColor: "#ff3d00",
-    elevation: 3
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.5,
+    shadowRadius: 2
   }
 });

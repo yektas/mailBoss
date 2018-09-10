@@ -3,7 +3,13 @@ import { View, StyleSheet, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import { CustomText } from "./common";
 
-class ListItem extends Component {
+class UserFeedItem extends Component {
+  renderUnreadIndicator(mail) {
+    if (mail !== "" && mail.read !== true) {
+      return <View style={styles.unreadIndicator} />;
+    }
+  }
+
   render() {
     const { data, onPress } = this.props;
     const {
@@ -19,6 +25,7 @@ class ListItem extends Component {
     return (
       <TouchableOpacity onPress={onPress}>
         <View style={container}>
+          {this.renderUnreadIndicator(data.last_email)}
           <View style={avatarContainer}>
             <Icon name="ios-contact" color={"#3A373E"} size={80} />
           </View>
@@ -41,7 +48,7 @@ class ListItem extends Component {
     );
   }
 }
-export default ListItem;
+export default UserFeedItem;
 
 const styles = StyleSheet.create({
   container: {
@@ -51,6 +58,13 @@ const styles = StyleSheet.create({
     width: "100%",
     borderBottomWidth: 0.5,
     borderBottomColor: "#999798"
+  },
+  unreadIndicator: {
+    position: "absolute",
+    height: 60,
+    width: 3,
+    backgroundColor: "#ff3d00",
+    alignSelf: "center"
   },
   avatarContainer: {
     flex: 1.5,

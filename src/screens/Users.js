@@ -1,47 +1,66 @@
 import React, { Component } from "react";
-import {
-  ScrollView,
-  View,
-  FlatList,
-  StyleSheet,
-  AsyncStorage
-} from "react-native";
+import { View, FlatList, StyleSheet, AsyncStorage } from "react-native";
 import axios from "axios";
-import ListItem from "../components/ListItem";
+import urls from "../config/urls";
+import UserFeedItem from "../components/UserFeedItem";
 import { Header, PlusButton } from "../components/common";
 
 class Users extends Component {
+  static navigationOptions = {
+    headerTransparent: true
+  };
   constructor() {
     super();
     this.state = {
       users: [],
-      auth_token: ""
+      auth_token: "",
+      refreshing: false
     };
   }
 
   async componentWillMount() {
-    const header = {};
     try {
       const value = await AsyncStorage.getItem("auth_token");
       if (value !== null) {
-        header.Authorization = `Token ${value}`;
+        this.setState({
+          auth_token: `Token ${value}`
+        });
       }
     } catch (error) {
       console.log(error);
     }
+    this.fetchData();
+  }
 
+  fetchData() {
+    const header = { Authorization: this.state.auth_token };
     axios
-      .get("http://192.168.1.2:8000/api/users", {
+      .get(urls.FetchUsersFeed, {
         headers: header
       })
       .then(response => {
         this.setState({
-          users: response.data
+          users: response.data,
+          refreshing: false
         });
       })
       .catch(error => {
-        console.log(error);
+        console.log(error.response);
       });
+  }
+
+  handleRefresh() {
+    this.setState({ refreshing: true });
+    this.fetchData();
+  }
+  handleCloseNotification() {
+    this.setState({ formValid: true, registerFailed: false });
+  }
+
+  mailOnPress(mail) {
+    this.props.navigation.navigate("MailDetail", {
+      mail
+    });
   }
 
   renderSeparator = () => {
@@ -57,20 +76,22 @@ class Users extends Component {
   };
 
   renderItem(item) {
-    return <ListItem data={item} />;
+    return (
+      <UserFeedItem onPress={this.mailOnPress.bind(this, item)} data={item} />
+    );
   }
   render() {
     return (
       <View style={styles.container}>
         <Header headerText="Users" />
-        <ScrollView styles={{ flex: 1 }}>
-          <FlatList
-            keyExtractor={item => item.id.toString()}
-            renderItem={({ item, index }) => this.renderItem(item, index)}
-            data={this.state.users}
-            ItemSeparatorComponent={this.renderSeparatorRR}
-          />
-        </ScrollView>
+        <FlatList
+          keyExtractor={item => item.id.toString()}
+          renderItem={({ item, index }) => this.renderItem(item, index)}
+          data={this.state.users}
+          ItemSeparatorComponent={this.renderSeparator}
+          refreshing={this.state.refreshing}
+          onRefresh={this.handleRefresh.bind(this)}
+        />
         <PlusButton />
       </View>
     );
