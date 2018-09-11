@@ -1,0 +1,7 @@
+{
+    "extends": ["rallycoding", "plugin:prettier/recommended"],
+    "rules": {
+        "arrow-body-style": 0,
+        "global-require": "off"
+    }
+}
