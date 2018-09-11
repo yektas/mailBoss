@@ -1,9 +1,11 @@
 import React from "react";
 import { View } from "react-native";
 import { Font } from "expo";
+import { observer } from "mobx-react/native";
 import { createRootNavigator } from "./src/router";
 import { isSignedIn } from "./src/auth";
 
+@observer
 export default class App extends React.Component {
   constructor(props) {
     super(props);

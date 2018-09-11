@@ -9,6 +9,8 @@ import {
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { LinearGradient } from "expo";
 import axios from "axios";
+import { observer } from "mobx-react/native";
+import UserStore from "../store/UserStore";
 import Images from "../config/images";
 import urls from "../config/urls";
 import {
@@ -20,6 +22,7 @@ import {
   Notification
 } from "../components/common";
 
+@observer
 export default class LoginForm extends Component {
   static navigationOptions = {
     headerTransparent: true
@@ -55,8 +58,15 @@ export default class LoginForm extends Component {
       })
       .then(async response => {
         try {
-          await AsyncStorage.setItem("auth_token", response.data.token);
-          this.props.navigation.navigate("Users");
+          const user = {
+            userId: response.data.id,
+            username: response.data.username,
+            email: response.data.email,
+            authToken: response.data.token
+          };
+          await AsyncStorage.setItem("loggedInUser", JSON.stringify(user));
+          UserStore.setUser(user);
+          this.props.navigation.navigate("Inbox");
         } catch (error) {
           console.log(error);
         }

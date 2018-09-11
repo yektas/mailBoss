@@ -21,8 +21,8 @@ class MailDetail extends Component {
       mailText,
       timestampStyle
     } = styles;
-    const mail = this.props.navigation.getParam("mail");
-    console.log(mail);
+    const user = this.props.navigation.getParam("user");
+
     return (
       <View style={container}>
         <Header headerText="Mailbox" />
@@ -33,30 +33,30 @@ class MailDetail extends Component {
             </View>
             <View style={contentContainer}>
               <CustomText style={boldText} numberOfLines={1}>
-                {mail.username}
+                {user.username}
               </CustomText>
               <View style={{ flexDirection: "row" }}>
                 <CustomText style={labelStyle}>From: </CustomText>
                 <CustomText style={regularText} numberOfLines={1}>
-                  {mail.last_email.from_user.email}
+                  {user.last_email.from_user.email}
                 </CustomText>
               </View>
               <View style={{ flexDirection: "row" }}>
                 <CustomText style={labelStyle}>To: </CustomText>
                 <CustomText style={regularText} numberOfLines={1}>
-                  {mail.last_email.to_user.email}
+                  {user.last_email.to_user.email}
                 </CustomText>
               </View>
             </View>
           </View>
           <View style={subjectContainer}>
-            <CustomText style={boldText}>{mail.last_email.subject}</CustomText>
+            <CustomText style={boldText}>{user.last_email.subject}</CustomText>
             <CustomText style={timestampStyle}>
-              {mail.last_email.timestamp}
+              {user.last_email.timestamp}
             </CustomText>
           </View>
           <View style={mailContainer}>
-            <CustomText style={mailText}>{mail.last_email.content}</CustomText>
+            <CustomText style={mailText}>{user.last_email.content}</CustomText>
           </View>
         </ScrollView>
       </View>

@@ -1,10 +1,13 @@
 import React, { Component } from "react";
-import { View, FlatList, StyleSheet, AsyncStorage } from "react-native";
+import { View, FlatList, StyleSheet } from "react-native";
 import axios from "axios";
+import { observer } from "mobx-react/native";
+import UserStore from "../store/UserStore";
 import urls from "../config/urls";
-import UserFeedItem from "../components/UserFeedItem";
+import ListItem from "../components/ListItem";
 import { Header, PlusButton } from "../components/common";
 
+@observer
 class Users extends Component {
   static navigationOptions = {
     headerTransparent: true
@@ -13,35 +16,31 @@ class Users extends Component {
     super();
     this.state = {
       users: [],
-      auth_token: "",
-      refreshing: false
+      refreshing: false,
+      loading: false
     };
   }
 
-  async componentWillMount() {
-    try {
-      const value = await AsyncStorage.getItem("auth_token");
-      if (value !== null) {
-        this.setState({
-          auth_token: `Token ${value}`
-        });
-      }
-    } catch (error) {
-      console.log(error);
-    }
+  componentWillMount() {
     this.fetchData();
   }
 
   fetchData() {
-    const header = { Authorization: this.state.auth_token };
+    this.setState({
+      loading: true
+    });
+    const header = {
+      Authorization: `Token ${UserStore.authToken}`
+    };
     axios
-      .get(urls.FetchUsersFeed, {
+      .get(urls.UsersFeed, {
         headers: header
       })
       .then(response => {
         this.setState({
           users: response.data,
-          refreshing: false
+          refreshing: false,
+          loading: false
         });
       })
       .catch(error => {
@@ -77,23 +76,30 @@ class Users extends Component {
 
   renderItem(item) {
     return (
-      <UserFeedItem onPress={this.mailOnPress.bind(this, item)} data={item} />
+      <ListItem
+        avatarIcon
+        onPress={this.mailOnPress.bind(this, item)}
+        data={item}
+      />
     );
   }
   render() {
+    const { loading } = this.state.loading;
     return (
-      <View style={styles.container}>
-        <Header headerText="Users" />
-        <FlatList
-          keyExtractor={item => item.id.toString()}
-          renderItem={({ item, index }) => this.renderItem(item, index)}
-          data={this.state.users}
-          ItemSeparatorComponent={this.renderSeparator}
-          refreshing={this.state.refreshing}
-          onRefresh={this.handleRefresh.bind(this)}
-        />
-        <PlusButton />
-      </View>
+      !loading && (
+        <View style={styles.container}>
+          <Header headerText="Users" />
+          <FlatList
+            keyExtractor={item => item.id.toString()}
+            renderItem={({ item, index }) => this.renderItem(item, index)}
+            data={this.state.users}
+            ItemSeparatorComponent={this.renderSeparator}
+            refreshing={this.state.refreshing}
+            onRefresh={this.handleRefresh.bind(this)}
+          />
+          <PlusButton />
+        </View>
+      )
     );
   }
 }
@@ -101,6 +107,7 @@ export default Users;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    backgroundColor: "#ffff"
   }
 });

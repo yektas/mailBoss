@@ -60,7 +60,7 @@ export default class RegisterForm extends Component {
           this.setState({
             loading: false
           });
-          this.props.navigation.navigate("");
+          this.props.navigation.navigate("TabNavigator");
         })
         .catch(error => {
           console.log(error.response);

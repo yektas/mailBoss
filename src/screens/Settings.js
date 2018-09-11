@@ -5,7 +5,7 @@ import { Header, Button } from "../components/common";
 class Settings extends Component {
   async handleLogout() {
     try {
-      await AsyncStorage.removeItem("auth_token");
+      await AsyncStorage.removeItem("loggedInUser");
       this.props.navigation.navigate("Auth");
     } catch (error) {
       console.log(`Logout failed: Error: ${error}`);
