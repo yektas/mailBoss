@@ -3,16 +3,20 @@ import { View, StyleSheet, FlatList, AsyncStorage } from "react-native";
 import axios from "axios";
 import { observer } from "mobx-react/native";
 import UserStore from "../store/UserStore";
-import { Header, PlusButton } from "../components/common";
+import { FloatingButton, CustomText } from "../components/common";
 import urls from "../config/urls";
+import { markAsRead } from "../helpers/api";
 import ListItem from "../components/ListItem";
 
 @observer
 class Inbox extends Component {
+  static navigationOptions = () => ({
+    title: "Inbox"
+  });
+
   constructor() {
     super();
     this.state = {
-      mails: [],
       loading: false,
       refreshing: false
     };
@@ -31,7 +35,15 @@ class Inbox extends Component {
   }
 
   onMailPress(mail) {
-    return null;
+    const authToken = UserStore.authToken;
+    if (!mail.read) {
+      markAsRead(mail.id, authToken).then(this.fetchData());
+    }
+    this.props.navigation.navigate("MailDetail", { mail });
+  }
+
+  onNewButtonPress() {
+    this.props.navigation.navigate("NewEmail");
   }
 
   fetchData() {
@@ -42,15 +54,15 @@ class Inbox extends Component {
       Authorization: `Token ${UserStore.authToken}`
     };
     axios
-      .get(`${urls.UserEmails}1`, {
+      .get(`${urls.UserEmails}/${UserStore.user.userId}`, {
         headers: header
       })
       .then(response => {
         this.setState({
-          mails: response.data,
           refreshing: false,
           loading: false
         });
+        UserStore.setInbox(response.data);
       })
       .catch(error => {
         console.log(error.response);
@@ -63,6 +75,7 @@ class Inbox extends Component {
     this.setState({ refreshing: true });
     this.fetchData();
   }
+
   renderSeparator = () => {
     return (
       <View
@@ -86,21 +99,38 @@ class Inbox extends Component {
     );
   }
 
+  renderMails() {
+    const mailCount = UserStore.inbox.length;
+    console.log(UserStore.inbox);
+    return mailCount !== 0 ? (
+      <FlatList
+        keyExtractor={item => item.id.toString()}
+        renderItem={({ item, index }) => this.renderItem(item, index)}
+        data={UserStore.inbox}
+        ItemSeparatorComponent={this.renderSeparator}
+        refreshing={this.state.refreshing}
+        onRefresh={this.handleRefresh.bind(this)}
+      />
+    ) : (
+      <View style={styles.textContainer}>
+        <CustomText style={styles.textStyle}>
+          There is no email, yet.
+        </CustomText>
+      </View>
+    );
+  }
+
   render() {
     const { loading } = this.state.loading;
+
     return (
       !loading && (
         <View style={styles.container}>
-          <Header headerText="Inbox" />
-          <FlatList
-            keyExtractor={item => item.id.toString()}
-            renderItem={({ item, index }) => this.renderItem(item, index)}
-            data={this.state.mails}
-            ItemSeparatorComponent={this.renderSeparator}
-            refreshing={this.state.refreshing}
-            onRefresh={this.handleRefresh.bind(this)}
+          {this.renderMails()}
+          <FloatingButton
+            onPress={this.onNewButtonPress.bind(this)}
+            iconName="plus"
           />
-          <PlusButton />
         </View>
       )
     );
@@ -112,5 +142,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#ffff"
+  },
+  textContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  textStyle: {
+    color: "#999798",
+    fontSize: 18,
+    alignSelf: "center"
   }
 });

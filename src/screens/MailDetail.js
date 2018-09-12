@@ -1,13 +1,34 @@
 import React, { Component } from "react";
 import { View, ScrollView, StyleSheet } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
-import { Header, CustomText } from "../components/common";
+import format from "date-fns/format";
+import { observer } from "mobx-react/native";
+import Fonts from "../config/fonts";
+import { CustomText, FloatingButton } from "../components/common";
+import UserStore from "../store/UserStore";
 
+@observer
 class MailDetail extends Component {
-  static navigationOptions = {
-    headerTransparent: true
-  };
+  static navigationOptions = () => ({
+    title: "Mail Details"
+  });
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      mail: this.props.navigation.getParam("mail")
+    };
+  }
+  renderTimestamp(timestamp) {
+    return format(new Date(timestamp), "D MMMM YYYY HH:mm");
+  }
+
+  onReplyPress(mail) {
+    this.props.navigation.navigate("Reply", { mail });
+  }
+
   render() {
+    console.log(this.state.replyVisible);
     const {
       container,
       subjectContainer,
@@ -21,11 +42,10 @@ class MailDetail extends Component {
       mailText,
       timestampStyle
     } = styles;
-    const user = this.props.navigation.getParam("user");
 
+    const data = this.state.mail;
     return (
       <View style={container}>
-        <Header headerText="Mailbox" />
         <ScrollView>
           <View style={informationContainer}>
             <View style={avatarContainer}>
@@ -33,32 +53,36 @@ class MailDetail extends Component {
             </View>
             <View style={contentContainer}>
               <CustomText style={boldText} numberOfLines={1}>
-                {user.username}
+                {data.from_user.username}
               </CustomText>
               <View style={{ flexDirection: "row" }}>
                 <CustomText style={labelStyle}>From: </CustomText>
                 <CustomText style={regularText} numberOfLines={1}>
-                  {user.last_email.from_user.email}
+                  {data.from_user.email}
                 </CustomText>
               </View>
               <View style={{ flexDirection: "row" }}>
                 <CustomText style={labelStyle}>To: </CustomText>
                 <CustomText style={regularText} numberOfLines={1}>
-                  {user.last_email.to_user.email}
+                  {data.to_user.email}
                 </CustomText>
               </View>
             </View>
           </View>
           <View style={subjectContainer}>
-            <CustomText style={boldText}>{user.last_email.subject}</CustomText>
+            <CustomText style={boldText}>{data.subject}</CustomText>
             <CustomText style={timestampStyle}>
-              {user.last_email.timestamp}
+              {this.renderTimestamp(data.timestamp)}
             </CustomText>
           </View>
           <View style={mailContainer}>
-            <CustomText style={mailText}>{user.last_email.content}</CustomText>
+            <CustomText style={mailText}>{data.content}</CustomText>
           </View>
         </ScrollView>
+        <FloatingButton
+          iconName="reply"
+          onPress={this.onReplyPress.bind(this, data)}
+        />
       </View>
     );
   }
@@ -67,13 +91,16 @@ export default MailDetail;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    backgroundColor: "#ffff"
   },
   informationContainer: {
     flexDirection: "row",
     flex: 2,
     borderBottomWidth: 0.5,
-    borderBottomColor: "#999798"
+    borderBottomColor: "#999798",
+    paddingHorizontal: 20,
+    paddingVertical: 10
   },
   avatarContainer: {
     flex: 1,
@@ -90,7 +117,7 @@ const styles = StyleSheet.create({
     borderBottomColor: "#999798",
     justifyContent: "center",
     paddingLeft: 20,
-    paddingHorizontal: 20
+    paddingHorizontal: 10
   },
   mailContainer: {
     flex: 5,
@@ -98,7 +125,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10
   },
   boldText: {
-    fontWeight: "500",
+    fontFamily: Fonts.productSansBold,
     fontSize: 22
   },
   regularText: {

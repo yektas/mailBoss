@@ -18,6 +18,9 @@ export default class RegisterForm extends Component {
   static navigationOptions = ({ navigation }) => ({
     headerLeft: <BackButton onPress={() => navigation.goBack()} />,
     headerTransparent: true,
+    headerStyle: {
+      height: 100
+    },
     headerTintColor: "#FDD835"
   });
 
@@ -60,7 +63,8 @@ export default class RegisterForm extends Component {
           this.setState({
             loading: false
           });
-          this.props.navigation.navigate("TabNavigator");
+          alert("Signup successfull");
+          this.props.navigation.navigate("Login");
         })
         .catch(error => {
           console.log(error.response);
@@ -68,6 +72,7 @@ export default class RegisterForm extends Component {
             loading: false,
             registerFailed: true
           });
+          alert("Signup failed");
         });
     }
   }
@@ -174,12 +179,6 @@ export default class RegisterForm extends Component {
     } = styles;
     return (
       <LinearGradient colors={["#2A0845", "#6441A5"]} style={{ flex: 1 }}>
-        <StatusBar
-          barStyle="light-content"
-          backgroundColor="transparent"
-          translucent
-        />
-
         <KeyboardAwareScrollView
           style={container}
           contentContainerStyle={{

@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { View, StyleSheet, TouchableOpacity } from "react-native";
 import format from "date-fns/format";
 import Icon from "react-native-vector-icons/Ionicons";
+import Fonts from "../config/fonts";
 import { CustomText } from "./common";
 
 class ListItem extends Component {
@@ -64,7 +65,6 @@ class ListItem extends Component {
 
   render() {
     const { data, onPress, type } = this.props;
-
     const { contentContainer, dateContainer, container, dateText } = styles;
 
     return (
@@ -127,6 +127,7 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontSize: 22,
+    fontFamily: Fonts.productSansBold,
     color: "#3A373E"
   },
   subText: {
@@ -134,7 +135,7 @@ const styles = StyleSheet.create({
     color: "#3A373E"
   },
   peakText: {
-    fontSize: 17,
+    fontSize: 18,
     color: "#999798"
   }
 });

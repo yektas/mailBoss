@@ -33,6 +33,9 @@ export default class LoginForm extends Component {
     this.state = {
       username: "",
       password: "",
+      showNotification: false,
+      messageOne: "",
+      messageTwo: "",
       touched: false,
       loading: false,
       formValid: true,
@@ -44,65 +47,55 @@ export default class LoginForm extends Component {
     this.setState({ touched: true });
   }
   handleCloseNotification() {
-    this.setState({ formValid: true, loginFailed: false });
+    this.setState({ showNotification: false });
   }
 
   async handleLogin() {
+    const { username, password } = this.state;
     this.setState({
       loading: true
     });
-    axios
-      .post(urls.Login, {
-        username: this.state.username,
-        password: this.state.password
-      })
-      .then(async response => {
-        try {
-          const user = {
-            userId: response.data.id,
-            username: response.data.username,
-            email: response.data.email,
-            authToken: response.data.token
-          };
-          await AsyncStorage.setItem("loggedInUser", JSON.stringify(user));
-          UserStore.setUser(user);
-          this.props.navigation.navigate("Inbox");
-        } catch (error) {
-          console.log(error);
-        }
-      })
-      .catch(() => {
-        this.setState({
-          loginFailed: true,
-          loading: false
-        });
-        this.renderNotification();
+    if (
+      (username === "" && password === "") ||
+      (username === "" && password !== "") ||
+      (username !== "" && password === "")
+    ) {
+      this.setState({
+        showNotification: true,
+        messageOne: "Please fill all the fields.",
+        loading: false
       });
-  }
-  showactivityIndicator() {
-    this.setState({
-      loading: true
-    });
-    setTimeout(
-      () =>
-        this.setState({
-          loading: false
-        }),
-      2500
-    );
-  }
-
-  renderNotification() {
-    const showNotification = !this.state.formValid || this.state.loginFailed;
-    return (
-      <Notification
-        showNotification={showNotification}
-        handleCloseNotification={this.handleCloseNotification.bind(this)}
-        type="Error"
-        firstLine="Your credentials are wrong."
-        secondLine="Please try again"
-      />
-    );
+    } else {
+      axios
+        .post(urls.Login, {
+          username,
+          password
+        })
+        .then(async response => {
+          try {
+            const user = {
+              userId: response.data.id,
+              username: response.data.username,
+              email: response.data.email,
+              authToken: response.data.token
+            };
+            await AsyncStorage.setItem("loggedInUser", JSON.stringify(user));
+            UserStore.setUser(user);
+            this.props.navigation.navigate("Inbox");
+          } catch (error) {
+            console.log(error);
+          }
+        })
+        .catch(() => {
+          this.setState({
+            showNotification: true,
+            messageOne: "Your credentials are wrong.",
+            messageTwo: "Please try again.",
+            loginFailed: true,
+            loading: false
+          });
+        });
+    }
   }
 
   render() {
@@ -116,11 +109,6 @@ export default class LoginForm extends Component {
     } = styles;
     return (
       <LinearGradient colors={["#2A0845", "#6441A5"]} style={{ flex: 1 }}>
-        <StatusBar
-          barStyle="light-content"
-          backgroundColor="transparent"
-          translucent
-        />
         <KeyboardAwareScrollView
           style={container}
           contentContainerStyle={{
@@ -166,10 +154,13 @@ export default class LoginForm extends Component {
           </View>
         </KeyboardAwareScrollView>
         <Spinner animationType="fade" visible={this.state.loading} />
-        <Button onPress={this.showactivityIndicator.bind(this)}>
-          Open spinner
-        </Button>
-        {this.renderNotification()}
+        <Notification
+          showNotification={this.state.showNotification}
+          handleCloseNotification={this.handleCloseNotification.bind(this)}
+          type={"Error"}
+          firstLine={this.state.messageOne}
+          secondLine={this.state.messageTwo}
+        />
       </LinearGradient>
     );
   }

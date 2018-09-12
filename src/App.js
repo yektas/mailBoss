@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, YellowBox } from "react-native";
+import { View, YellowBox, StatusBar } from "react-native";
 import { createRootNavigator } from "./router";
 import { isSignedIn } from "./auth";
 
@@ -25,6 +25,11 @@ export default class App extends Component {
     const RootNavigator = createRootNavigator(this.state.signedIn);
     return (
       <View style={{ flex: 1 }}>
+        <StatusBar
+          barStyle="light-content"
+          backgroundColor="transparent"
+          translucent
+        />
         <RootNavigator />
       </View>
     );

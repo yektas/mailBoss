@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { StyleSheet, Text } from "react-native";
+import Fonts from "../../config/fonts";
 
 class CustomText extends Component {
   render() {
@@ -17,7 +18,7 @@ export { CustomText };
 
 const styles = StyleSheet.create({
   textStyle: {
-    fontFamily: "ProductSans-Regular",
+    fontFamily: Fonts.productSansRegular,
     color: "#3A373E"
   }
 });

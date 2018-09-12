@@ -1,18 +1,21 @@
 import React from "react";
 import { View, TouchableOpacity, StyleSheet } from "react-native";
-import Icon from "react-native-vector-icons/Ionicons";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
-const PlusButton = () => (
+const FloatingButton = props => (
   <View style={{ flex: 1 }}>
-    <TouchableOpacity style={styles.plusButton}>
-      <Icon name="ios-add" color={"#ffff"} size={35} />
+    <TouchableOpacity
+      style={[styles.floatingButton, props.style]}
+      onPress={props.onPress}
+    >
+      <Icon name={props.iconName} color={"#ffff"} size={30} />
     </TouchableOpacity>
   </View>
 );
-export { PlusButton };
+export { FloatingButton };
 
 const styles = StyleSheet.create({
-  plusButton: {
+  floatingButton: {
     position: "absolute",
     alignItems: "center",
     justifyContent: "center",

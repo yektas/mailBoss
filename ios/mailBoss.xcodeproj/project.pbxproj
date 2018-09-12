@@ -5,7 +5,6 @@
 	};
 	objectVersion = 46;
 	objects = {
-
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -55,6 +54,12 @@
 		D23D3BAA504F4CD9B778791C /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7A17E6BDB1BE4DFD8FCC39DA /* Octicons.ttf */; };
 		E74DCA5E10FF4DB48D60274B /* FontAwesome5_Solid.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 45AA4D44046B48F4B7A4C1F7 /* FontAwesome5_Solid.ttf */; };
 		FAD928C3FDE84CA8B8EA1E80 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1DDC0CADBACD4F9CBE3FE913 /* SimpleLineIcons.ttf */; };
+		B1CD64AA67E649FAB2B8CC41 /* Product Sans Bold Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AAFEE8A95FBC4559BFE08C2F /* Product Sans Bold Italic.ttf */; };
+		6E4D9CEB43204A6BA298B221 /* Product Sans Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 28FEDB08D1394F1D8742ED59 /* Product Sans Bold.ttf */; };
+		750F24CE24EF4912B5983BFD /* Product Sans Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 77210389CCC64097A455B907 /* Product Sans Italic.ttf */; };
+		380EA46CF73E4BB097D80CF7 /* Product-Sans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 769FD42764364BF081560938 /* Product-Sans-Regular.ttf */; };
+		487C7729A4A741F8A070AFEE /* Product Sans Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 58E730DEDBA74440925019B7 /* Product Sans Regular.ttf */; };
+		D9069BAF26A14F93BE3761FF /* ProductSans-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C7A2EB5F0118475DA1FD2A4F /* ProductSans-Bold.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -400,6 +405,12 @@
 		B4C1824578BB482CB709C8D9 /* RNVectorIcons.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNVectorIcons.xcodeproj; path = "../node_modules/react-native-vector-icons/RNVectorIcons.xcodeproj"; sourceTree = "<group>"; };
 		D97C64218F8C4D92A6ED7FF6 /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
 		F1389349317544718A57FD0C /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialCommunityIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
+		AAFEE8A95FBC4559BFE08C2F /* Product Sans Bold Italic.ttf */ = {isa = PBXFileReference; name = "Product Sans Bold Italic.ttf"; path = "../src/assets/fonts/Product Sans Bold Italic.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		28FEDB08D1394F1D8742ED59 /* Product Sans Bold.ttf */ = {isa = PBXFileReference; name = "Product Sans Bold.ttf"; path = "../src/assets/fonts/Product Sans Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		77210389CCC64097A455B907 /* Product Sans Italic.ttf */ = {isa = PBXFileReference; name = "Product Sans Italic.ttf"; path = "../src/assets/fonts/Product Sans Italic.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		769FD42764364BF081560938 /* Product-Sans-Regular.ttf */ = {isa = PBXFileReference; name = "Product-Sans-Regular.ttf"; path = "../src/assets/fonts/Product-Sans-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		58E730DEDBA74440925019B7 /* Product Sans Regular.ttf */ = {isa = PBXFileReference; name = "Product Sans Regular.ttf"; path = "../src/assets/fonts/Product Sans Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		C7A2EB5F0118475DA1FD2A4F /* ProductSans-Bold.ttf */ = {isa = PBXFileReference; name = "ProductSans-Bold.ttf"; path = "../src/assets/fonts/ProductSans-Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -702,6 +713,12 @@
 				1DDC0CADBACD4F9CBE3FE913 /* SimpleLineIcons.ttf */,
 				797CE83DDD8248EF85E92DAD /* Zocial.ttf */,
 				8F8EC0B0D3D7428CAC855FD8 /* ProductSans-Regular.ttf */,
+				AAFEE8A95FBC4559BFE08C2F /* Product Sans Bold Italic.ttf */,
+				28FEDB08D1394F1D8742ED59 /* Product Sans Bold.ttf */,
+				77210389CCC64097A455B907 /* Product Sans Italic.ttf */,
+				769FD42764364BF081560938 /* Product-Sans-Regular.ttf */,
+				58E730DEDBA74440925019B7 /* Product Sans Regular.ttf */,
+				C7A2EB5F0118475DA1FD2A4F /* ProductSans-Bold.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -1205,6 +1222,12 @@
 				FAD928C3FDE84CA8B8EA1E80 /* SimpleLineIcons.ttf in Resources */,
 				5C6ADB3668FD42398DAF7BD5 /* Zocial.ttf in Resources */,
 				A2E7A165A2174CA4A30BC8A3 /* ProductSans-Regular.ttf in Resources */,
+				B1CD64AA67E649FAB2B8CC41 /* Product Sans Bold Italic.ttf in Resources */,
+				6E4D9CEB43204A6BA298B221 /* Product Sans Bold.ttf in Resources */,
+				750F24CE24EF4912B5983BFD /* Product Sans Italic.ttf in Resources */,
+				380EA46CF73E4BB097D80CF7 /* Product-Sans-Regular.ttf in Resources */,
+				487C7729A4A741F8A070AFEE /* Product Sans Regular.ttf in Resources */,
+				D9069BAF26A14F93BE3761FF /* ProductSans-Bold.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { View, StyleSheet, TextInput, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
+import Fonts from "../../config/fonts";
 import { CustomText } from "./CustomText";
 
 class Input extends Component {
@@ -83,13 +84,13 @@ const styles = StyleSheet.create({
   },
   inputField: {
     fontSize: 20,
-    height: 40,
+    height: 45,
     paddingHorizontal: 5,
     marginBottom: 5,
     backgroundColor: "transparent",
     borderBottomWidth: 0.5,
     borderBottomColor: "#FDD835",
-    fontFamily: "ProductSans-Regular",
+    fontFamily: Fonts.productSansRegular,
     color: "#ffff"
   },
   secureIconStyle: {

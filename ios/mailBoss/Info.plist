@@ -39,7 +39,7 @@
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string/>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSExceptionDomains</key>
@@ -68,6 +68,12 @@
 		<string>Octicons.ttf</string>
 		<string>SimpleLineIcons.ttf</string>
 		<string>Zocial.ttf</string>
+		<string>Product Sans Bold Italic.ttf</string>
+		<string>Product Sans Bold.ttf</string>
+		<string>Product Sans Italic.ttf</string>
+		<string>Product-Sans-Regular.ttf</string>
+		<string>Product Sans Regular.ttf</string>
+		<string>ProductSans-Bold.ttf</string>
 	</array>
 </dict>
 </plist>

@@ -1,18 +1,36 @@
 import React from "react";
+import { Platform } from "react-native";
 import {
   createStackNavigator,
   createBottomTabNavigator,
   createSwitchNavigator
 } from "react-navigation";
 import Icon from "react-native-vector-icons/Ionicons";
+import Fonts from "./config/fonts";
 import Register from "./screens/RegisterForm";
 import Login from "./screens/LoginForm";
 import Users from "./screens/Users";
 import Inbox from "./screens/Inbox";
+import Reply from "./screens/Reply";
+import NewEmail from "./screens/NewEmail";
+import MailsBetween from "./screens/MailsBetween";
 import MailDetail from "./screens/MailDetail";
 import Settings from "./screens/Settings";
+import IconBadge from "./components/common/IconBadge";
 
-const AuthStackNavigator = createStackNavigator(
+const navigationOptions = {
+  headerStyle: {
+    height: Platform.OS === "ios" ? 70 : 70 + 24,
+    backgroundColor: "#421C6B"
+  },
+  headerTintColor: "#FDD835",
+  headerTitleStyle: {
+    fontFamily: Fonts.productSansBold,
+    fontSize: 22
+  }
+};
+
+const AuthStack = createStackNavigator(
   {
     Register,
     Login
@@ -22,23 +40,49 @@ const AuthStackNavigator = createStackNavigator(
   }
 );
 
-const MainStack = createStackNavigator({
-  Users,
-  MailDetail
-});
+const SettingsStack = createStackNavigator(
+  {
+    Settings,
+    AuthStack
+  },
+  {
+    navigationOptions
+  }
+);
+
+const UsersStack = createStackNavigator(
+  {
+    Users,
+    MailDetail,
+    MailsBetween
+  },
+  {
+    navigationOptions
+  }
+);
+
+const InboxStack = createStackNavigator(
+  {
+    Inbox,
+    MailDetail,
+    Reply,
+    NewEmail
+  },
+  {
+    navigationOptions
+  }
+);
 const TabNavigator = createBottomTabNavigator(
   {
     Inbox: {
-      screen: Inbox,
+      screen: InboxStack,
       navigationOptions: () => ({
         tabBarLabel: "INBOX",
-        tabBarIcon: ({ tintColor }) => (
-          <Icon name="ios-mail-open" color={tintColor} size={22} />
-        )
+        tabBarIcon: ({ tintColor }) => <IconBadge tintColor={tintColor} />
       })
     },
     Users: {
-      screen: MainStack,
+      screen: UsersStack,
       navigationOptions: () => ({
         tabBarLabel: "USERS",
         tabBarIcon: ({ tintColor }) => (
@@ -47,7 +91,7 @@ const TabNavigator = createBottomTabNavigator(
       })
     },
     Settings: {
-      screen: Settings,
+      screen: SettingsStack,
       navigationOptions: () => ({
         tabBarLabel: "SETTINGS",
         tabBarIcon: ({ tintColor }) => (
@@ -74,11 +118,14 @@ const TabNavigator = createBottomTabNavigator(
 export const createRootNavigator = (signedIn = false) => {
   return createSwitchNavigator(
     {
-      Auth: AuthStackNavigator,
-      TabNavigator
+      Auth: AuthStack,
+      TabNav: TabNavigator,
+      InboxStack,
+      UsersStack,
+      SettingsStack
     },
     {
-      initialRouteName: signedIn ? "TabNavigator" : "Auth"
+      initialRouteName: signedIn ? "TabNav" : "Auth"
     }
   );
 };

@@ -1,21 +1,22 @@
 import React, { Component } from "react";
-import { View, FlatList, StyleSheet } from "react-native";
-import axios from "axios";
+import { View, StyleSheet, FlatList } from "react-native";
 import { observer } from "mobx-react/native";
-import UserStore from "../store/UserStore";
+import axios from "axios";
 import urls from "../config/urls";
 import ListItem from "../components/ListItem";
+import UserStore from "../store/UserStore";
 
 @observer
-class Users extends Component {
-  static navigationOptions = () => ({
-    title: "Users"
-  });
+class MailsBetween extends Component {
+  static navigationOptions = {
+    title: `Mails between user`
+  };
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
-      users: [],
+      mails: [],
+      betweenUser: this.props.navigation.getParam("user"),
       refreshing: false,
       loading: false
     };
@@ -25,9 +26,6 @@ class Users extends Component {
     this.fetchData();
   }
 
-  onPressUser(user) {
-    this.props.navigation.navigate("MailsBetween", { user });
-  }
   handleRefresh() {
     this.setState({ refreshing: true });
     this.fetchData();
@@ -35,6 +33,7 @@ class Users extends Component {
   handleCloseNotification() {
     this.setState({ formValid: true, registerFailed: false });
   }
+
   fetchData() {
     this.setState({
       loading: true
@@ -42,13 +41,15 @@ class Users extends Component {
     const header = {
       Authorization: `Token ${UserStore.authToken}`
     };
+    const userId = UserStore.user.userId;
+    const url = `${urls.UserEmails}/${userId}/${this.state.betweenUser.id}/`;
     axios
-      .get(`${urls.UsersFeed}/${UserStore.user.userId}`, {
+      .get(url, {
         headers: header
       })
       .then(response => {
         this.setState({
-          users: response.data,
+          mails: response.data,
           refreshing: false,
           loading: false
         });
@@ -57,6 +58,11 @@ class Users extends Component {
         console.log(error.response);
       });
   }
+
+  mailOnPress(mail) {
+    this.props.navigation.navigate("MailDetails", { mail });
+  }
+
   renderSeparator = () => {
     return (
       <View
@@ -69,15 +75,17 @@ class Users extends Component {
     );
   };
 
-  renderItem(user) {
+  renderItem(item) {
     return (
       <ListItem
-        avatarIcon
-        onPress={this.onPressUser.bind(this, user)}
-        data={user}
+        avatarIcon={false}
+        type={"email"}
+        onPress={this.mailOnPress.bind(this, item)}
+        data={item}
       />
     );
   }
+
   render() {
     const { loading } = this.state.loading;
     return (
@@ -86,7 +94,7 @@ class Users extends Component {
           <FlatList
             keyExtractor={item => item.id.toString()}
             renderItem={({ item, index }) => this.renderItem(item, index)}
-            data={this.state.users}
+            data={this.state.mails}
             ItemSeparatorComponent={this.renderSeparator}
             refreshing={this.state.refreshing}
             onRefresh={this.handleRefresh.bind(this)}
@@ -96,7 +104,7 @@ class Users extends Component {
     );
   }
 }
-export default Users;
+export default MailsBetween;
 
 const styles = StyleSheet.create({
   container: {

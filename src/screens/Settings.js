@@ -1,8 +1,12 @@
 import React, { Component } from "react";
 import { View, StyleSheet, AsyncStorage } from "react-native";
-import { Header, Button } from "../components/common";
+import { Button } from "../components/common";
 
 class Settings extends Component {
+  static navigationOptions = () => ({
+    title: "Settings"
+  });
+
   async handleLogout() {
     try {
       await AsyncStorage.removeItem("loggedInUser");
@@ -15,7 +19,6 @@ class Settings extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Header headerText="Settings" />
         <Button
           onPress={this.handleLogout.bind(this)}
           buttonStyle={styles.buttonStyle}
@@ -31,7 +34,10 @@ export default Settings;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#ffff"
   },
   buttonStyle: {
     marginTop: 20,
