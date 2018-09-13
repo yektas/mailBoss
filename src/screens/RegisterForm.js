@@ -50,8 +50,20 @@ export default class RegisterForm extends Component {
   }
 
   onSubmit() {
-    const { validEmail, validUsername, validPassword } = this.state;
-    if (validEmail && validUsername && validPassword) {
+    const {
+      validEmail,
+      validUsername,
+      validPassword,
+      username,
+      email,
+      password
+    } = this.state;
+    if (
+      validEmail &&
+      validUsername &&
+      validPassword &&
+      (username !== "" && email !== "" && password !== "")
+    ) {
       this.setState({ formValid: true });
       axios
         .post(urls.CreateUser, {
@@ -63,7 +75,7 @@ export default class RegisterForm extends Component {
           this.setState({
             loading: false
           });
-          alert("Signup successfull");
+          alert("Signup successful");
           this.props.navigation.navigate("Login");
         })
         .catch(error => {
@@ -72,7 +84,6 @@ export default class RegisterForm extends Component {
             loading: false,
             registerFailed: true
           });
-          alert("Signup failed");
         });
     }
   }

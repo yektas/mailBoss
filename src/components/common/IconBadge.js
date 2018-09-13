@@ -10,7 +10,7 @@ class IconBadge extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Icon name="ios-mail" color={this.props.tintColor} size={22} />
+        <Icon name="ios-mail" color={this.props.tintColor} size={32} />
         {UserStore.unreadCount > 0 && (
           <View style={styles.badgeContainer}>
             <CustomText style={styles.valueStyle}>
@@ -26,11 +26,13 @@ export default IconBadge;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    justifyContent: "center",
+    alignSelf: "center"
   },
   badgeContainer: {
     position: "absolute",
-    top: 2,
+    top: 8,
     right: -5,
     minWidth: 13,
     height: 13,
@@ -40,7 +42,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#FF0000"
   },
   valueStyle: {
-    fontSize: 14,
-    color: "#ffff"
+    fontSize: 10,
+    color: "#ffff",
+    alignSelf: "center",
+    justifyContent: "center"
   }
 });

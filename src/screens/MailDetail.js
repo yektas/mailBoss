@@ -19,14 +19,13 @@ class MailDetail extends Component {
       mail: this.props.navigation.getParam("mail")
     };
   }
-  renderTimestamp(timestamp) {
-    return format(new Date(timestamp), "D MMMM YYYY HH:mm");
-  }
 
   onReplyPress(mail) {
     this.props.navigation.navigate("Reply", { mail });
   }
-
+  renderTimestamp(timestamp) {
+    return format(new Date(timestamp), "D MMMM YYYY HH:mm");
+  }
   render() {
     console.log(this.state.replyVisible);
     const {

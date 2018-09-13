@@ -86,7 +86,7 @@ const TabNavigator = createBottomTabNavigator(
       navigationOptions: () => ({
         tabBarLabel: "USERS",
         tabBarIcon: ({ tintColor }) => (
-          <Icon name="ios-contacts" color={tintColor} size={22} />
+          <Icon name="ios-contacts" color={tintColor} size={32} />
         )
       })
     },
@@ -95,21 +95,22 @@ const TabNavigator = createBottomTabNavigator(
       navigationOptions: () => ({
         tabBarLabel: "SETTINGS",
         tabBarIcon: ({ tintColor }) => (
-          <Icon name="ios-cog" color={tintColor} size={22} />
+          <Icon name="ios-cog" color={tintColor} size={32} />
         )
       })
     }
   },
   {
     tabBarOptions: {
-      activeTintColor: "#FDD835", // active icon color
-      inactiveTintColor: "#A891A6", // inactive icon color
+      showLabel: false,
+      activeTintColor: "#FDD835",
+      inactiveTintColor: "#A891A6",
       labelStyle: {
         fontWeight: "600",
         marginBottom: 5
       },
       style: {
-        backgroundColor: "#421C6B" // TabBar background
+        backgroundColor: "#421C6B"
       }
     }
   }

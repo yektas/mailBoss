@@ -5,7 +5,7 @@ import axios from "axios";
 import UserStore from "../store/UserStore";
 import Fonts from "../config/fonts";
 import urls from "../config/urls";
-import { CustomText, FloatingButton } from "../components/common";
+import { CustomText, FloatingButton, Notification } from "../components/common";
 
 @observer
 class NewEmail extends Component {
@@ -20,7 +20,10 @@ class NewEmail extends Component {
       subject: "",
       content: "",
       emailValid: true,
-      isUserExists: true
+      isUserExists: true,
+      showNotification: false,
+      messageOne: "",
+      messageTwo: ""
     };
   }
 
@@ -29,10 +32,15 @@ class NewEmail extends Component {
       Authorization: `Token ${UserStore.authToken}`
     };
     axios
-      .post(urls.CheckUser, {
-        email: toEmail,
-        headers: header
-      })
+      .post(
+        urls.CheckUser,
+        {
+          email: toEmail
+        },
+        {
+          headers: header
+        }
+      )
       .then(response => {
         this.setState(
           {
@@ -43,7 +51,10 @@ class NewEmail extends Component {
       })
       .catch(error => {
         this.setState({
-          isUserExists: false
+          isUserExists: false,
+          showNotification: true,
+          messageOne: "There is no matching user with this email",
+          messageTwo: "Please check it again."
         });
       });
   }
@@ -51,6 +62,12 @@ class NewEmail extends Component {
   handleEmailSend() {
     const { toEmail } = this.state;
     this.checkServerForEmail(toEmail);
+  }
+
+  handleCloseNotification() {
+    this.setState({
+      showNotification: false
+    });
   }
 
   sendEmail(toEmail) {
@@ -65,12 +82,16 @@ class NewEmail extends Component {
       content: this.state.content
     };
     axios
-      .post(urls.SendEmail, {
-        mail,
-        headers: header
-      })
+      .post(
+        urls.SendEmail,
+        {
+          mail
+        },
+        { headers: header }
+      )
       .then(response => {
         alert("Email sent");
+        this.props.navigation.navigate("Inbox");
       })
       .catch(error => {
         console.log(error);
@@ -87,6 +108,8 @@ class NewEmail extends Component {
       labelContainer,
       inputStyle
     } = styles;
+
+    console.log(this.state.showNotification);
     return (
       <View style={container}>
         <View style={informationContainer}>
@@ -146,6 +169,13 @@ class NewEmail extends Component {
         <FloatingButton
           onPress={this.handleEmailSend.bind(this)}
           iconName="send"
+        />
+        <Notification
+          showNotification={this.state.showNotification}
+          handleCloseNotification={this.handleCloseNotification.bind(this)}
+          type={"Error"}
+          firstLine={this.state.messageOne}
+          secondLine={this.state.messageTwo}
         />
       </View>
     );

@@ -48,10 +48,15 @@ class Reply extends Component {
       Authorization: `Token ${UserStore.authToken}`
     };
     axios
-      .post(`${urls.UserEmails}/${mail.id}/reply/`, {
-        data,
-        headers: header
-      })
+      .post(
+        `${urls.UserEmails}/${mail.id}/reply/`,
+        {
+          data
+        },
+        {
+          headers: header
+        }
+      )
       .then(response => {
         console.log(response);
         this.setState({
