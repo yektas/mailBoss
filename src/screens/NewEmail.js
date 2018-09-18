@@ -1,11 +1,15 @@
 import React, { Component } from "react";
-import { View, TextInput, StyleSheet } from "react-native";
+import { View, TextInput, Animated, Easing, StyleSheet } from "react-native";
 import { observer } from "mobx-react/native";
 import axios from "axios";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import ActionButton from "react-native-action-button";
+import LottieView from "lottie-react-native";
 import UserStore from "../store/UserStore";
 import Fonts from "../config/fonts";
 import urls from "../config/urls";
-import { CustomText, FloatingButton, Notification } from "../components/common";
+import { CustomText, Notification } from "../components/common";
+import images from "../config/images";
 
 @observer
 class NewEmail extends Component {
@@ -16,18 +20,20 @@ class NewEmail extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      toEmail: "",
+      receiverEmail: "",
       subject: "",
-      content: "",
+      body: "",
       emailValid: true,
       isUserExists: true,
+      progress: new Animated.Value(0),
+      showAnimation: false,
       showNotification: false,
       messageOne: "",
       messageTwo: ""
     };
   }
 
-  checkServerForEmail(toEmail) {
+  checkServerForEmail(receiverEmail) {
     const header = {
       Authorization: `Token ${UserStore.authToken}`
     };
@@ -35,7 +41,7 @@ class NewEmail extends Component {
       .post(
         urls.CheckUser,
         {
-          email: toEmail
+          email: receiverEmail
         },
         {
           headers: header
@@ -46,7 +52,7 @@ class NewEmail extends Component {
           {
             isUserExists: true
           },
-          () => this.sendEmail(toEmail)
+          () => this.sendEmail(receiverEmail)
         );
       })
       .catch(error => {
@@ -60,8 +66,15 @@ class NewEmail extends Component {
   }
 
   handleEmailSend() {
-    const { toEmail } = this.state;
-    this.checkServerForEmail(toEmail);
+    const { receiverEmail, subject, body } = this.state;
+    if (receiverEmail === "" || subject === "" || body === "") {
+      this.setState({
+        showNotification: true,
+        messageOne: "Please fill all the fields and try again!"
+      });
+    } else {
+      this.checkServerForEmail(receiverEmail);
+    }
   }
 
   handleCloseNotification() {
@@ -69,17 +82,19 @@ class NewEmail extends Component {
       showNotification: false
     });
   }
-
-  sendEmail(toEmail) {
+  sendEmail(receiverEmail) {
+    this.setState({
+      showAnimation: true
+    });
     const header = {
       Authorization: `Token ${UserStore.authToken}`
     };
 
     const mail = {
-      from_user: UserStore.user.userId,
-      to_email: toEmail,
+      sender_id: UserStore.user.userId,
+      receiver_email: receiverEmail,
       subject: this.state.subject,
-      content: this.state.content
+      body: this.state.body
     };
     axios
       .post(
@@ -90,26 +105,28 @@ class NewEmail extends Component {
         { headers: header }
       )
       .then(response => {
-        alert("Email sent");
-        this.props.navigation.navigate("Inbox");
+        Animated.timing(this.state.progress, {
+          toValue: 1,
+          duration: 2000,
+          easing: Easing.linear
+        }).start(() => this.props.navigation.navigate("Inbox"));
       })
       .catch(error => {
         console.log(error);
       });
   }
+
   render() {
     const {
       container,
       informationContainer,
-      contentStyle,
-      contentWrapper,
+      bodyStyle,
+      bodyWrapper,
       labelStyle,
       emailContainer,
       labelContainer,
       inputStyle
     } = styles;
-
-    console.log(this.state.showNotification);
     return (
       <View style={container}>
         <View style={informationContainer}>
@@ -117,7 +134,7 @@ class NewEmail extends Component {
             style={{
               flex: 1,
               flexDirection: "row",
-              borderBottomWidth: 0.5,
+              borderBottomWidth: 0.3,
               borderBottomColor: "#999798",
               alignItems: "center"
             }}
@@ -131,7 +148,7 @@ class NewEmail extends Component {
                 keyboardType={"email-address"}
                 autoCorrect={false}
                 autoCapitalize={"none"}
-                onChangeText={text => this.setState({ toEmail: text })}
+                onChangeText={text => this.setState({ receiverEmail: text })}
                 underlineColorAndroid={"transparent"}
               />
             </View>
@@ -140,7 +157,7 @@ class NewEmail extends Component {
             style={{
               flex: 1,
               flexDirection: "row",
-              borderBottomWidth: 0.5,
+              borderBottomWidth: 0.3,
               borderBottomColor: "#999798",
               alignItems: "center"
             }}
@@ -156,19 +173,20 @@ class NewEmail extends Component {
             />
           </View>
         </View>
-        <View style={contentWrapper}>
+        <View style={bodyWrapper}>
           <TextInput
-            style={contentStyle}
+            style={bodyStyle}
             autoCorrect={false}
             multiline
-            onChangeText={text => this.setState({ content: text })}
+            onChangeText={text => this.setState({ body: text })}
             underlineColorAndroid={"transparent"}
             placeholder={"Say something"}
           />
         </View>
-        <FloatingButton
+        <ActionButton
+          buttonColor="#ff3d00"
+          renderIcon={() => <Icon color={"#ffff"} name={"send"} size={22} />}
           onPress={this.handleEmailSend.bind(this)}
-          iconName="send"
         />
         <Notification
           showNotification={this.state.showNotification}
@@ -177,6 +195,16 @@ class NewEmail extends Component {
           firstLine={this.state.messageOne}
           secondLine={this.state.messageTwo}
         />
+        {this.state.showAnimation && (
+          <LottieView
+            source={images.mailAnimation}
+            progress={this.state.progress}
+            style={{
+              zIndex: 9
+            }}
+            resizeMode="cover"
+          />
+        )}
       </View>
     );
   }
@@ -223,11 +251,12 @@ const styles = StyleSheet.create({
     flex: 2,
     flexDirection: "column"
   },
-  contentWrapper: {
+  bodyWrapper: {
     flex: 6
   },
-  contentStyle: {
+  bodyStyle: {
     fontSize: 20,
+    marginTop: 10,
     paddingHorizontal: 20,
     fontFamily: Fonts.productSansRegular
   }

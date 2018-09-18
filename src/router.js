@@ -12,15 +12,15 @@ import Login from "./screens/LoginForm";
 import Users from "./screens/Users";
 import Inbox from "./screens/Inbox";
 import Reply from "./screens/Reply";
+import PreviousMails from "./screens/PreviousMails";
 import NewEmail from "./screens/NewEmail";
 import MailsBetween from "./screens/MailsBetween";
-import MailDetail from "./screens/MailDetail";
 import Settings from "./screens/Settings";
-import IconBadge from "./components/common/IconBadge";
+import { IconBadge } from "./components/common";
 
 const navigationOptions = {
   headerStyle: {
-    height: Platform.OS === "ios" ? 70 : 70 + 24,
+    height: Platform.OS === "ios" ? 60 : 60 + 24,
     backgroundColor: "#421C6B"
   },
   headerTintColor: "#FDD835",
@@ -53,8 +53,8 @@ const SettingsStack = createStackNavigator(
 const UsersStack = createStackNavigator(
   {
     Users,
-    MailDetail,
-    MailsBetween
+    MailsBetween,
+    PreviousMails
   },
   {
     navigationOptions
@@ -64,11 +64,13 @@ const UsersStack = createStackNavigator(
 const InboxStack = createStackNavigator(
   {
     Inbox,
-    MailDetail,
     Reply,
+    PreviousMails,
     NewEmail
   },
   {
+    initialRouteName: "Inbox",
+    backBehavior: "initialRoute",
     navigationOptions
   }
 );

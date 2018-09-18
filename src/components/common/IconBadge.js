@@ -7,6 +7,15 @@ import { CustomText } from "./CustomText";
 
 @observer
 class IconBadge extends Component {
+  state = {
+    count: 0
+  };
+
+  componentDidMount() {
+    this.setState({
+      count: UserStore.unreadCount
+    });
+  }
   render() {
     return (
       <View style={styles.container}>
@@ -22,7 +31,7 @@ class IconBadge extends Component {
     );
   }
 }
-export default IconBadge;
+export { IconBadge };
 
 const styles = StyleSheet.create({
   container: {

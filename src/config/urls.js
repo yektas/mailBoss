@@ -1,4 +1,4 @@
-const baseURL = "http://localhost:8000/api";
+const baseURL = "http://192.168.1.2:8000/api";
 
 const urls = {
   CheckUser: `${baseURL}/user/check-user/`,
@@ -7,7 +7,8 @@ const urls = {
   Login: `${baseURL}/auth/login/`,
   UsersFeed: `${baseURL}/feed/users`,
   Users: `${baseURL}/users/`,
-  UserEmails: `${baseURL}/user/emails`
+  UserEmails: `${baseURL}/user/emails`,
+  EmailReplies: `${baseURL}/user/emails/replies`
 };
 
 export default urls;

@@ -18,19 +18,17 @@ class UserStore {
   }
 
   @computed
-  get authToken() {
-    return this.user.authToken;
-  }
-
-  @computed
   get unreadCount() {
     let count = 0;
     for (let i = 0; i < this.inbox.length; i++) {
-      if (!this.inbox[i].read) {
-        count++;
-      }
+      if (!this.inbox[i].status.isRead) count += 1;
     }
     return count;
+  }
+
+  @computed
+  get authToken() {
+    return this.user.authToken;
   }
 }
 

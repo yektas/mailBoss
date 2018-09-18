@@ -3,6 +3,9 @@ package com.mailboss;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.airbnb.android.react.lottie.LottiePackage;
+import com.airbnb.android.react.lottie.LottiePackage;
+import com.cmcewen.blurview.BlurViewPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.BV.LinearGradient.LinearGradientPackage;
 import com.facebook.react.ReactNativeHost;
@@ -25,6 +28,9 @@ public class MainApplication extends Application implements ReactApplication {
 protected List<ReactPackage> getPackages() {
   return Arrays.<ReactPackage>asList(
     new MainReactPackage(),
+            new LottiePackage(),
+            new LottiePackage(),
+            new BlurViewPackage(),
     new LinearGradientPackage() // <---- and This! 
   );
 }

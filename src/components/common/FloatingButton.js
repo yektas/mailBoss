@@ -3,14 +3,12 @@ import { View, TouchableOpacity, StyleSheet } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 const FloatingButton = props => (
-  <View style={{ flex: 1 }}>
-    <TouchableOpacity
-      style={[styles.floatingButton, props.style]}
-      onPress={props.onPress}
-    >
-      <Icon name={props.iconName} color={"#ffff"} size={30} />
-    </TouchableOpacity>
-  </View>
+  <TouchableOpacity
+    style={[styles.floatingButton, props.style]}
+    onPress={props.onPress}
+  >
+    <Icon name={props.iconName} color={"#ffff"} size={30} />
+  </TouchableOpacity>
 );
 export { FloatingButton };
 

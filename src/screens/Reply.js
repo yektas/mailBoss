@@ -1,7 +1,9 @@
 import React, { Component } from "react";
-import { View, StyleSheet, TextInput } from "react-native";
+import { View, Animated, Easing, StyleSheet, TextInput } from "react-native";
 import axios from "axios";
 import { observer } from "mobx-react/native";
+import LottieView from "lottie-react-native";
+import images from "../config/images";
 import UserStore from "../store/UserStore";
 import urls from "../config/urls";
 import { CustomText, FloatingButton } from "../components/common";
@@ -14,56 +16,64 @@ class Reply extends Component {
   };
   constructor(props) {
     super(props);
+
     const mail = this.props.navigation.getParam("mail");
+    const loggedInUser = UserStore.user;
+    let receiver = "";
+    if (mail.parentMail.message.sender.id === loggedInUser.userId) {
+      receiver = mail.parentMail.receiver;
+    } else {
+      receiver = mail.parentMail.message.sender;
+    }
+
+    const subject = `Re: ${mail.parentMail.message.subject}`;
+
     this.state = {
       emailValid: true,
       loading: false,
-      content: mail.content,
-      subject: mail.subject
+      receiver,
+      showAnimation: false,
+      progress: new Animated.Value(0),
+      body: "",
+      subject
     };
   }
 
-  handleReply(mail) {
-    this.setState({
-      loading: false
-    });
-    const toUser = mail.from_user;
+  handleReply() {
     const replyMail = {
-      id: mail.id,
-      to_user: toUser.id,
+      parent_id: this.props.navigation.getParam("mail").parentMail.message.id,
+      sender_id: UserStore.user.userId,
+      receiver_id: this.state.receiver.id,
       subject: this.state.subject,
-      content: this.state.content
+      body: this.state.body
     };
     this.sendReply(replyMail);
   }
 
   sendReply(mail) {
-    const data = {
-      from_user: UserStore.user.userId,
-      to_user: mail.to_user,
-      subject: mail.subject,
-      content: mail.content
-    };
+    this.setState({
+      showAnimation: true
+    });
     const header = {
       Authorization: `Token ${UserStore.authToken}`
     };
+    const url = `${urls.UserEmails}/reply/`;
     axios
       .post(
-        `${urls.UserEmails}/${mail.id}/reply/`,
+        url,
         {
-          data
+          data: mail
         },
         {
           headers: header
         }
       )
       .then(response => {
-        console.log(response);
-        this.setState({
-          loading: false
-        });
-        alert("Reply sent.");
-        this.props.navigation.navigate("Inbox");
+        Animated.timing(this.state.progress, {
+          toValue: 1,
+          duration: 2000,
+          easing: Easing.linear
+        }).start(() => this.props.navigation.navigate("Inbox"));
       })
       .catch(error => {
         console.log(error.response);
@@ -74,8 +84,6 @@ class Reply extends Component {
   }
 
   render() {
-    const mail = this.props.navigation.getParam("mail");
-    console.log(mail);
     const {
       container,
       informationContainer,
@@ -84,8 +92,8 @@ class Reply extends Component {
       labelContainer,
       emailStyle,
       inputStyle,
-      contentWrapper,
-      contentStyle
+      bodyWrapper,
+      bodyStyle
     } = styles;
     return (
       <View style={container}>
@@ -103,7 +111,9 @@ class Reply extends Component {
               <CustomText style={labelStyle}>To : </CustomText>
             </View>
             <View pointerEvents={"none"} style={emailContainer}>
-              <CustomText style={emailStyle}>{mail.from_user.email}</CustomText>
+              <CustomText style={emailStyle}>
+                {this.state.receiver.email}
+              </CustomText>
             </View>
           </View>
           <View
@@ -122,29 +132,34 @@ class Reply extends Component {
               style={inputStyle}
               autoCorrect={false}
               autoCapitalize={"none"}
-              name="subject"
               onChangeText={text => this.setState({ subject: text })}
               underlineColorAndroid={"transparent"}
               defaultValue={this.state.subject}
             />
           </View>
         </View>
-        <View style={contentWrapper}>
+        <View style={bodyWrapper}>
           <TextInput
-            style={contentStyle}
+            style={bodyStyle}
             autoCorrect={false}
             multiline
-            name="content"
             autoCapitalize={"none"}
-            onChangeText={text => this.setState({ content: text })}
+            onChangeText={text => this.setState({ body: text })}
             underlineColorAndroid={"transparent"}
             placeholder={"Say something"}
           />
         </View>
-        <FloatingButton
-          onPress={this.handleReply.bind(this, mail)}
-          iconName="send"
-        />
+        {this.state.showAnimation && (
+          <LottieView
+            source={images.mailAnimation}
+            progress={this.state.progress}
+            style={{
+              zIndex: 9
+            }}
+            resizeMode="cover"
+          />
+        )}
+        <FloatingButton onPress={this.handleReply.bind(this)} iconName="send" />
       </View>
     );
   }
@@ -195,10 +210,10 @@ const styles = StyleSheet.create({
     flex: 2,
     flexDirection: "column"
   },
-  contentWrapper: {
+  bodyWrapper: {
     flex: 6
   },
-  contentStyle: {
+  bodyStyle: {
     fontSize: 20,
     fontFamily: Fonts.productSansRegular,
     paddingHorizontal: 20

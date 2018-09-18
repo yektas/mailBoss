@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { View, StyleSheet, AsyncStorage } from "react-native";
-import { Button } from "../components/common";
+import { Button, CustomText } from "../components/common";
+import UserStore from "../store/UserStore";
 
 class Settings extends Component {
   static navigationOptions = () => ({
@@ -19,6 +20,7 @@ class Settings extends Component {
   render() {
     return (
       <View style={styles.container}>
+        <CustomText>Current User : {UserStore.user.username}</CustomText>
         <Button
           onPress={this.handleLogout.bind(this)}
           buttonStyle={styles.buttonStyle}

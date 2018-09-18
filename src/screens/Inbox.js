@@ -2,8 +2,9 @@ import React, { Component } from "react";
 import { View, StyleSheet, FlatList, AsyncStorage } from "react-native";
 import axios from "axios";
 import { observer } from "mobx-react/native";
+import ActionButton from "react-native-action-button";
 import UserStore from "../store/UserStore";
-import { FloatingButton, CustomText } from "../components/common";
+import { CustomText, Spinner } from "../components/common";
 import urls from "../config/urls";
 import { markAsRead } from "../helpers/api";
 import ListItem from "../components/ListItem";
@@ -14,15 +15,18 @@ class Inbox extends Component {
     title: "Inbox"
   });
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       loading: false,
-      refreshing: false
+      refreshing: false,
+      showModal: false,
+      selectedMail: null,
+      inbox: null
     };
   }
 
-  async componentWillMount() {
+  async componentDidMount() {
     if (UserStore.user === null) {
       try {
         const user = await AsyncStorage.getItem("loggedInUser");
@@ -31,15 +35,27 @@ class Inbox extends Component {
         console.log(error);
       }
     }
+    const didBlurSubscription = this.props.navigation.addListener(
+      "didBlur",
+      () => {
+        this.fetchData();
+      }
+    );
+    const willFocusSubscription = this.props.navigation.addListener(
+      "willFocus",
+      () => {
+        this.fetchData();
+      }
+    );
     this.fetchData();
   }
 
+  componentWillUnmount() {}
   onMailPress(mail) {
-    const authToken = UserStore.authToken;
-    if (!mail.read) {
-      markAsRead(mail.id, authToken).then(this.fetchData());
-    }
-    this.props.navigation.navigate("MailDetail", { mail });
+    markAsRead(mail);
+    this.props.navigation.navigate("PreviousMails", {
+      mail: this.state.selectedMail
+    });
   }
 
   onNewButtonPress() {
@@ -60,17 +76,16 @@ class Inbox extends Component {
       .then(response => {
         this.setState({
           refreshing: false,
-          loading: false
+          loading: false,
+          inbox: response.data
         });
         UserStore.setInbox(response.data);
       })
       .catch(error => {
-        console.log(error.response);
-        this.setState({
-          refreshing: false
-        });
+        console.log(error);
       });
   }
+
   handleRefresh() {
     this.setState({ refreshing: true });
     this.fetchData();
@@ -93,20 +108,20 @@ class Inbox extends Component {
       <ListItem
         avatarIcon={false}
         type={"email"}
-        onPress={this.onMailPress.bind(this, mail)}
+        onPress={() =>
+          this.setState({ selectedMail: mail }, () => this.onMailPress(mail))
+        }
         data={mail}
       />
     );
   }
 
   renderMails() {
-    const mailCount = UserStore.inbox.length;
-    console.log(UserStore.inbox);
-    return mailCount !== 0 ? (
+    return UserStore.inbox.length !== 0 ? (
       <FlatList
-        keyExtractor={item => item.id.toString()}
+        keyExtractor={item => item.parentMail.id.toString()}
         renderItem={({ item, index }) => this.renderItem(item, index)}
-        data={UserStore.inbox}
+        data={this.state.inbox}
         ItemSeparatorComponent={this.renderSeparator}
         refreshing={this.state.refreshing}
         onRefresh={this.handleRefresh.bind(this)}
@@ -123,16 +138,16 @@ class Inbox extends Component {
   render() {
     const { loading } = this.state.loading;
 
-    return (
-      !loading && (
-        <View style={styles.container}>
-          {this.renderMails()}
-          <FloatingButton
-            onPress={this.onNewButtonPress.bind(this)}
-            iconName="plus"
-          />
-        </View>
-      )
+    return !loading ? (
+      <View style={styles.container}>
+        {this.renderMails()}
+        <ActionButton
+          buttonColor="#ff3d00"
+          onPress={this.onNewButtonPress.bind(this)}
+        />
+      </View>
+    ) : (
+      <Spinner animationType="fade" visible={this.state.loading} />
     );
   }
 }

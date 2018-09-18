@@ -1,11 +1,5 @@
 import React, { Component } from "react";
-import {
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  AsyncStorage,
-  StatusBar
-} from "react-native";
+import { View, StyleSheet, TouchableOpacity, AsyncStorage } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import LinearGradient from "react-native-linear-gradient";
 import axios from "axios";

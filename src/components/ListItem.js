@@ -2,13 +2,18 @@ import React, { Component } from "react";
 import { View, StyleSheet, TouchableOpacity } from "react-native";
 import format from "date-fns/format";
 import Icon from "react-native-vector-icons/Ionicons";
+import { observer } from "mobx-react/native";
+import UserStore from "../store/UserStore";
 import Fonts from "../config/fonts";
 import { CustomText } from "./common";
 
+@observer
 class ListItem extends Component {
   renderUnreadIndicator(data) {
+    const userID = UserStore.user.userId;
     if (this.props.type === "email") {
-      return !data.read && <View style={styles.unreadIndicator} />;
+      if (data.status.user.id === userID)
+        return !data.status.isRead && <View style={styles.unreadIndicator} />;
     }
   }
 
@@ -24,9 +29,14 @@ class ListItem extends Component {
 
   renderFormattedDate(data, type) {
     if (type === "email") {
-      return format(new Date(data.timestamp), "DD.MM.YYYY HH:mm A");
+      return format(
+        new Date(data.lastReply.message.timestamp),
+        "DD.MM.YYYY HH:mm"
+      );
+    } else if (type === "between") {
+      return format(new Date(data.timestamp), "DD.MM.YYYY HH:mm");
     } else if (data.last_email !== "") {
-      return format(new Date(data.last_email.timestamp), "DD MMM");
+      return format(new Date(data.last_email.message.timestamp), "DD MMM");
     }
     return null;
   }
@@ -34,22 +44,31 @@ class ListItem extends Component {
   renderByType(data, type) {
     let headerText = "";
     let subText = "";
-    let content = "";
+    let body = "";
     let peakTextLines = 0;
 
     if (type === "email") {
-      headerText = data.from_user.username;
+      if (data.parentMail.message.sender.id === UserStore.user.userId) {
+        headerText = "Me";
+      } else {
+        headerText = data.parentMail.message.sender.username;
+      }
+      subText = data.parentMail.message.subject;
+      body = data.parentMail.message.body;
+      peakTextLines = 2;
+    } else if (type === "between") {
+      headerText = data.sender.username;
       subText = data.subject;
-      content = data.content;
+      body = data.body;
       peakTextLines = 2;
     } else {
       headerText = data.username;
       subText = data.email;
-      content = data.last_email.content;
+      body = data.last_email.message.body;
       peakTextLines = 1;
     }
     return (
-      <View style={styles.contentContainer}>
+      <View style={styles.bodyContainer}>
         <CustomText style={styles.headerText} numberOfLines={1}>
           {headerText}
         </CustomText>
@@ -57,7 +76,7 @@ class ListItem extends Component {
           {subText}
         </CustomText>
         <CustomText style={styles.peakText} numberOfLines={peakTextLines}>
-          {content}
+          {body}
         </CustomText>
       </View>
     );
@@ -65,14 +84,14 @@ class ListItem extends Component {
 
   render() {
     const { data, onPress, type } = this.props;
-    const { contentContainer, dateContainer, container, dateText } = styles;
+    const { bodyContainer, dateContainer, container, dateText } = styles;
 
     return (
       <TouchableOpacity onPress={onPress}>
         <View style={container}>
           {this.renderUnreadIndicator(data)}
           {this.renderAvatarIcon()}
-          <View style={contentContainer}>{this.renderByType(data, type)}</View>
+          <View style={bodyContainer}>{this.renderByType(data, type)}</View>
           <View style={dateContainer}>
             <CustomText style={dateText}>
               {this.renderFormattedDate(data, type)}
@@ -109,7 +128,7 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     marginRight: -20
   },
-  contentContainer: {
+  bodyContainer: {
     flex: 3,
     justifyContent: "center",
     paddingHorizontal: 5,
@@ -135,7 +154,7 @@ const styles = StyleSheet.create({
     color: "#3A373E"
   },
   peakText: {
-    fontSize: 18,
+    fontSize: 16,
     color: "#999798"
   }
 });

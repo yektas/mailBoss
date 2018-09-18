@@ -4,6 +4,7 @@ import axios from "axios";
 import { observer } from "mobx-react/native";
 import UserStore from "../store/UserStore";
 import urls from "../config/urls";
+import { Spinner } from "../components/common";
 import ListItem from "../components/ListItem";
 
 @observer
@@ -17,11 +18,11 @@ class Users extends Component {
     this.state = {
       users: [],
       refreshing: false,
-      loading: false
+      loading: true
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.fetchData();
   }
 
@@ -81,8 +82,8 @@ class Users extends Component {
   render() {
     const { loading } = this.state.loading;
     return (
-      !loading && (
-        <View style={styles.container}>
+      <View style={styles.container}>
+        {!loading ? (
           <FlatList
             keyExtractor={item => item.id.toString()}
             renderItem={({ item, index }) => this.renderItem(item, index)}
@@ -91,8 +92,10 @@ class Users extends Component {
             refreshing={this.state.refreshing}
             onRefresh={this.handleRefresh.bind(this)}
           />
-        </View>
-      )
+        ) : (
+          <Spinner animationType="fade" visible={this.state.loading} />
+        )}
+      </View>
     );
   }
 }

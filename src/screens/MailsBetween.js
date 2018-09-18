@@ -22,7 +22,7 @@ class MailsBetween extends Component {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.fetchData();
   }
 
@@ -58,11 +58,20 @@ class MailsBetween extends Component {
         console.log(error.response);
       });
   }
-
   mailOnPress(mail) {
-    this.props.navigation.navigate("MailDetails", { mail });
+    this.setState({ loading: true });
+    let payload = null;
+    for (let i = 0; i < UserStore.inbox.length; i++) {
+      if (UserStore.inbox[i].parentMail.id === mail.id) {
+        payload = UserStore.inbox[i];
+        break;
+      }
+    }
+    this.setState({ loading: false });
+    this.props.navigation.navigate("PreviousMails", {
+      mail: payload
+    });
   }
-
   renderSeparator = () => {
     return (
       <View
@@ -79,7 +88,7 @@ class MailsBetween extends Component {
     return (
       <ListItem
         avatarIcon={false}
-        type={"email"}
+        type={"between"}
         onPress={this.mailOnPress.bind(this, item)}
         data={item}
       />
