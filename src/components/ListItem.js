@@ -38,7 +38,6 @@ class ListItem extends Component {
     } else if (data.last_email !== "") {
       return format(new Date(data.last_email.message.timestamp), "DD MMM");
     }
-    return null;
   }
 
   renderByType(data, type) {
@@ -46,7 +45,6 @@ class ListItem extends Component {
     let subText = "";
     let body = "";
     let peakTextLines = 0;
-
     if (type === "email") {
       if (data.parentMail.message.sender.id === UserStore.user.userId) {
         headerText = "Me";
@@ -62,9 +60,11 @@ class ListItem extends Component {
       body = data.body;
       peakTextLines = 2;
     } else {
+      if (data.last_email !== "") {
+        body = data.last_email.message.body;
+      }
       headerText = data.username;
       subText = data.email;
-      body = data.last_email.message.body;
       peakTextLines = 1;
     }
     return (

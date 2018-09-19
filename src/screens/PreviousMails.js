@@ -49,7 +49,7 @@ class PreviousMails extends Component {
     markAsDeleted(this.state.mail).then(
       Animated.timing(this.state.progress, {
         toValue: 1,
-        duration: 2000,
+        duration: 1000,
         easing: Easing.linear
       }).start(() => this.props.navigation.navigate("Inbox"))
     );

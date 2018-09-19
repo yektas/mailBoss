@@ -2,8 +2,6 @@ import axios from "axios";
 import urls from "../config/urls";
 import UserStore from "../store/UserStore";
 
-//const baseURL = "http://192.168.1.2:8000/api";
-
 export function markAsRead(mail) {
   return new Promise((resolve, reject) => {
     const url = `${urls.UserEmails}/mark-as-read/`;
@@ -67,19 +65,3 @@ export function getRecentMails(userId, authToken) {
       console.log(error.response);
     });
 }
-
-export const getUnreadCount = (userId, authToken) => {
-  const header = {
-    Authorization: `Token ${authToken}`
-  };
-  axios
-    .get(`${urls.UserEmails}/unread-count/${userId}`, {
-      headers: header
-    })
-    .then(response => {
-      return response.data;
-    })
-    .catch(error => {
-      console.log(error.response);
-    });
-};
