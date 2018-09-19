@@ -1,4 +1,4 @@
-const baseURL = "http://192.168.1.2:8000/api";
+const baseURL = "http://localhost:8000/api";
 
 const urls = {
   CheckUser: `${baseURL}/user/check-user/`,
