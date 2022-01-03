@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import { View, Modal, StyleSheet, ActivityIndicator } from "react-native";
+import { View, Image, Modal, StyleSheet } from "react-native";
+import Images from "../../config/images";
 
 class Spinner extends Component {
   render() {
@@ -13,7 +14,7 @@ class Spinner extends Component {
       >
         <View style={styles.wrapper}>
           <View style={styles.loaderContainer}>
-            <ActivityIndicator size="large" />
+            <Image source={Images.loader} style={styles.loaderImage} />
           </View>
         </View>
       </Modal>
@@ -39,12 +40,16 @@ const styles = StyleSheet.create({
     left: 0
   },
   loaderContainer: {
+    width: 150,
+    height: 150,
     position: "absolute",
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
-    alignItems: "center",
-    justifyContent: "center"
+    left: "50%",
+    top: "50%",
+    marginLeft: -75,
+    marginTop: -75
+  },
+  loaderImage: {
+    width: 150,
+    height: 150
   }
 });

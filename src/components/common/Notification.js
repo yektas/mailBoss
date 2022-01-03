@@ -33,7 +33,7 @@ class Notification extends Component {
   render() {
     const { type, firstLine, secondLine, showNotification } = this.props;
     showNotification //eslint-disable-line no-unused-expressions
-      ? this.animateNotification(-0)
+      ? this.animateNotification(0)
       : this.animateNotification(-60);
     const { positionValue } = this.state;
     return (
@@ -59,14 +59,11 @@ export { Notification };
 
 const styles = StyleSheet.create({
   container: {
-    bottom: 0,
     justifyContent: "center",
     backgroundColor: "#ffff",
     height: 60,
     width: "100%",
-    padding: 10,
-    borderTopWidth: 0.5,
-    borderTopColor: "#999798"
+    padding: 10
   },
   content: {
     flexDirection: "row",

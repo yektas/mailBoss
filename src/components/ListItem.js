@@ -1,19 +1,13 @@
 import React, { Component } from "react";
 import { View, StyleSheet, TouchableOpacity } from "react-native";
 import format from "date-fns/format";
-import Icon from "react-native-vector-icons/Ionicons";
-import { observer } from "mobx-react/native";
-import UserStore from "../store/UserStore";
-import Fonts from "../config/fonts";
+import { Ionicons } from "@expo/vector-icons"; //eslint-disable-line import/no-extraneous-dependencies
 import { CustomText } from "./common";
 
-@observer
 class ListItem extends Component {
   renderUnreadIndicator(data) {
-    const userID = UserStore.user.userId;
     if (this.props.type === "email") {
-      if (data.status.user.id === userID)
-        return !data.status.isRead && <View style={styles.unreadIndicator} />;
+      return !data.read && <View style={styles.unreadIndicator} />;
     }
   }
 
@@ -21,7 +15,7 @@ class ListItem extends Component {
     return (
       this.props.avatarIcon && (
         <View style={styles.avatarContainer}>
-          <Icon name="ios-contact" color={"#3A373E"} size={80} />
+          <Ionicons name="ios-contact" color={"#3A373E"} size={80} />
         </View>
       )
     );
@@ -29,46 +23,32 @@ class ListItem extends Component {
 
   renderFormattedDate(data, type) {
     if (type === "email") {
-      return format(
-        new Date(data.lastReply.message.timestamp),
-        "DD.MM.YYYY HH:mm"
-      );
-    } else if (type === "between") {
-      return format(new Date(data.timestamp), "DD.MM.YYYY HH:mm");
+      return format(new Date(data.timestamp), "DD.MM.YYYY HH:mm A");
     } else if (data.last_email !== "") {
-      return format(new Date(data.last_email.message.timestamp), "DD MMM");
+      return format(new Date(data.last_email.timestamp), "DD MMM");
     }
+    return null;
   }
 
   renderByType(data, type) {
     let headerText = "";
     let subText = "";
-    let body = "";
+    let content = "";
     let peakTextLines = 0;
+
     if (type === "email") {
-      if (data.parentMail.message.sender.id === UserStore.user.userId) {
-        headerText = "Me";
-      } else {
-        headerText = data.parentMail.message.sender.username;
-      }
-      subText = data.parentMail.message.subject;
-      body = data.parentMail.message.body;
-      peakTextLines = 2;
-    } else if (type === "between") {
-      headerText = data.sender.username;
+      headerText = data.from_user.username;
       subText = data.subject;
-      body = data.body;
+      content = data.content;
       peakTextLines = 2;
     } else {
-      if (data.last_email !== "") {
-        body = data.last_email.message.body;
-      }
       headerText = data.username;
       subText = data.email;
+      content = data.last_email.content;
       peakTextLines = 1;
     }
     return (
-      <View style={styles.bodyContainer}>
+      <View style={styles.contentContainer}>
         <CustomText style={styles.headerText} numberOfLines={1}>
           {headerText}
         </CustomText>
@@ -76,7 +56,7 @@ class ListItem extends Component {
           {subText}
         </CustomText>
         <CustomText style={styles.peakText} numberOfLines={peakTextLines}>
-          {body}
+          {content}
         </CustomText>
       </View>
     );
@@ -84,14 +64,15 @@ class ListItem extends Component {
 
   render() {
     const { data, onPress, type } = this.props;
-    const { bodyContainer, dateContainer, container, dateText } = styles;
+
+    const { contentContainer, dateContainer, container, dateText } = styles;
 
     return (
       <TouchableOpacity onPress={onPress}>
         <View style={container}>
           {this.renderUnreadIndicator(data)}
           {this.renderAvatarIcon()}
-          <View style={bodyContainer}>{this.renderByType(data, type)}</View>
+          <View style={contentContainer}>{this.renderByType(data, type)}</View>
           <View style={dateContainer}>
             <CustomText style={dateText}>
               {this.renderFormattedDate(data, type)}
@@ -128,7 +109,7 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     marginRight: -20
   },
-  bodyContainer: {
+  contentContainer: {
     flex: 3,
     justifyContent: "center",
     paddingHorizontal: 5,
@@ -146,7 +127,6 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontSize: 22,
-    fontFamily: Fonts.productSansBold,
     color: "#3A373E"
   },
   subText: {
@@ -154,7 +134,7 @@ const styles = StyleSheet.create({
     color: "#3A373E"
   },
   peakText: {
-    fontSize: 16,
+    fontSize: 17,
     color: "#999798"
   }
 });

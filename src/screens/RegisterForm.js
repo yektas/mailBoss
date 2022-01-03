@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import { View, StyleSheet, TouchableOpacity } from "react-native";
+import { View, StyleSheet, TouchableOpacity, StatusBar } from "react-native";
+import { LinearGradient } from "expo";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import axios from "axios";
-import LinearGradient from "react-native-linear-gradient";
 import Images from "../config/images";
 import urls from "../config/urls";
 import {
@@ -18,9 +18,6 @@ export default class RegisterForm extends Component {
   static navigationOptions = ({ navigation }) => ({
     headerLeft: <BackButton onPress={() => navigation.goBack()} />,
     headerTransparent: true,
-    headerStyle: {
-      height: 100
-    },
     headerTintColor: "#FDD835"
   });
 
@@ -50,20 +47,8 @@ export default class RegisterForm extends Component {
   }
 
   onSubmit() {
-    const {
-      validEmail,
-      validUsername,
-      validPassword,
-      username,
-      email,
-      password
-    } = this.state;
-    if (
-      validEmail &&
-      validUsername &&
-      validPassword &&
-      (username !== "" && email !== "" && password !== "")
-    ) {
+    const { validEmail, validUsername, validPassword } = this.state;
+    if (validEmail && validUsername && validPassword) {
       this.setState({ formValid: true });
       axios
         .post(urls.CreateUser, {
@@ -75,8 +60,7 @@ export default class RegisterForm extends Component {
           this.setState({
             loading: false
           });
-          alert("Signup successful");
-          this.props.navigation.navigate("Login");
+          this.props.navigation.navigate("TabNavigator");
         })
         .catch(error => {
           console.log(error.response);
@@ -190,6 +174,12 @@ export default class RegisterForm extends Component {
     } = styles;
     return (
       <LinearGradient colors={["#2A0845", "#6441A5"]} style={{ flex: 1 }}>
+        <StatusBar
+          barStyle="light-content"
+          backgroundColor="transparent"
+          translucent
+        />
+
         <KeyboardAwareScrollView
           style={container}
           contentContainerStyle={{

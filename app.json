@@ -1,4 +1,17 @@
 {
-  "name": "mailBoss",
-  "displayName": "mailBoss"
+  "expo": {
+    "name": "mailBoss",
+    "slug": "mailBoss",
+    "version": "1.0.0",
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "bundleIdentifier": "com.sercan.mailBoss",
+      "buildNumber": "1.0.0"
+    },
+    "android": {
+      "package": "om.sercan.mailBoss",
+      "versionCode": 1
+    }
+  },
+  "name": "mailBoss"
 }
